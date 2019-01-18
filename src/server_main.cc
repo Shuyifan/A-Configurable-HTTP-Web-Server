@@ -9,26 +9,46 @@
 //
 
 #include <cstdlib>
+#include <cstdio>
 #include <iostream>
+#include <string>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
 #include "server.h"
 #include "session.h"
+#include "config_parser.h"
 
 using boost::asio::ip::tcp;
 
 int main(int argc, char* argv[]) {
     try {
         if (argc != 2) {
-            std::cerr << "Usage: async_tcp_echo_server <port>\n";
+            std::cerr << "Usage: async_tcp_echo_server <path to config file>\n";
             return 1;
         }
 
+        NginxConfigParser config_parser;
+        NginxConfig config;
+        config_parser.Parse(argv[1], &config);
+
         boost::asio::io_service io_service;
 
-        using namespace std; // For atoi.
-        server s(io_service, atoi(argv[1]));
+        using namespace std; // For string.
+        string config_str = config.ToString();
+        int start = config_str.find("listen");
+        if(start == -1) {
+            std::cerr << "No listen port in the config file\n";
+        }
+        int end = config_str.find(";", start);
+        start = end - 1;
+        while(isdigit(config_str[start])) {
+            start--;
+        }
+        int listen_port = stoi(config_str.substr(start + 1, end - start - 1));
+
+
+        server s(io_service, listen_port);
 
         io_service.run();
     } catch(std::exception& e) {
