@@ -1,8 +1,7 @@
-
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-
+#include <boost/algorithm/string.hpp>
 #include "session.h"
 
 using boost::asio::ip::tcp;
@@ -24,9 +23,9 @@ void session::start() {
 void session::handle_read(const boost::system::error_code& error,
       size_t bytes_transferred) {
     if(!error) {
-        response_ = get_response();
+        std::string response_ = get_response();
         boost::asio::async_write(socket_,
-          boost::asio::buffer(response_, response_.size()),
+          boost::asio::buffer(response_),
           boost::bind(&session::handle_write, this,
             boost::asio::placeholders::error));
     } else {
@@ -46,6 +45,9 @@ void session::handle_write(const boost::system::error_code& error) {
 }
 
 std::string session::get_response() {
-    std::string res = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
-    return res + data_;
+    std::stringstream res;
+    res << "HTTP/1.1 200 OK\r\n";
+    res << "Content-Type: text/html\r\n\r\n";
+    res << data_;
+    return res.str();
 }
