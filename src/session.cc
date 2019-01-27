@@ -53,5 +53,9 @@ std::string session::get_response() {
 std::string session::find_content() {
     std::string temp = data_;
     size_t start = temp.find("\r\n\r\n");
-    return temp.substr(start + 4);
+    if(start + 4 != temp.size()) {
+        return temp.substr(start + 4);
+    } else {
+        return "";
+    }
 }
