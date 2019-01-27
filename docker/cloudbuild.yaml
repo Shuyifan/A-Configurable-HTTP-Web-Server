@@ -23,4 +23,15 @@ steps:
     '-t', 'gcr.io/$PROJECT_ID/cracking-the-web:latest',
     '.'
   ]
-images: ['gcr.io/$PROJECT_ID/cracking-the-web:base', 'gcr.io/$PROJECT_ID/cracking-the-web:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-f', 'docker/coverage.Dockerfile',
+    '-t', 'gcr.io/$PROJECT_ID/cracking-the-web:coverage',
+    '.'
+  ]
+images: [
+  'gcr.io/$PROJECT_ID/cracking-the-web:base',
+  'gcr.io/$PROJECT_ID/cracking-the-web:latest',
+  'gcr.io/$PROJECT_ID/cracking-the-web:coverage'
+]
