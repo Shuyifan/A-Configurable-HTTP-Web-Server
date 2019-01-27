@@ -36,17 +36,8 @@ int main(int argc, char* argv[]) {
 
         using namespace std; // For string.
         string config_str = config.ToString();
-        int start = config_str.find("listen");
-        if(start == -1) {
-            std::cerr << "No listen port in the config file\n";
-        }
-        int end = config_str.find(";", start);
-        start = end - 1;
-        while(isdigit(config_str[start])) {
-            start--;
-        }
-        int listen_port = stoi(config_str.substr(start + 1, end - start - 1));
 
+        int listen_port = config_parser.getPortNum(config_str);
 
         server s(io_service, listen_port);
 
