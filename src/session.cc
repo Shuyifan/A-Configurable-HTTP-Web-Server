@@ -25,9 +25,14 @@ boost::system::error_code session::start() {
     std::stringstream buf;
     buf << data_;
     std::string input = buf.str();
-    reqParser.parse(req, input.begin(), input.end());
-    std::string response_ = get_response();
-    boost::asio::write(socket_, boost::asio::buffer(response_));
+    http::server::request_parser::result_type result;
+    std::tie(result, std::ignore) = reqParser.parse(req, input.begin(), input.end());
+    
+    if(result == http::server::request_parser::good) {
+        std::string response_ = get_response();
+        boost::asio::write(socket_, boost::asio::buffer(response_));
+    }
+
 
     return error;
 }
