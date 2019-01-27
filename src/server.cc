@@ -14,19 +14,17 @@ server::server(boost::asio::io_service& io_service, short port)
 
 void server::start_accept() {
     session* new_session = new session(io_service_);
-    acceptor_.async_accept(new_session->socket(),
-                           boost::bind(&server::handle_accept, this, new_session,
-                           boost::asio::placeholders::error));
-}
+    boost::system::error_code error;
+    acceptor_.accept(new_session->socket(), error);
 
-void server::handle_accept(session* new_session,
-                           const boost::system::error_code& error) {
-
-    if(!error) {
-      new_session->start();
-    } else {
+    if(error) {
+      printf("Connection failed: %d, %s\n",
+             error.value(), error.message().c_str());
       delete new_session;
+    } else {
+      auto err = new_session->start();
     }
 
     start_accept();
+
 }

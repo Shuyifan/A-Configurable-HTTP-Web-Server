@@ -35,7 +35,8 @@ message(STATUS "Boost version: ${Boost_VERSION}")
 include_directories(include)
 
 # TODO(!): Update name and srcs
-add_library(server_lib src/server.cc src/session.cc src/config_parser.cc)
+add_library(server_lib src/server.cc src/session.cc src/config_parser.cc 
+                        src/request_parser.cpp)
 
 # TODO(!): Update executable name, srcs, and deps
 add_executable(server src/server_main.cc)

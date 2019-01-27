@@ -3,6 +3,8 @@
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include "session.h"
+#include "request.h"
+#include "request_parser.h"
 
 using boost::asio::ip::tcp;
 
@@ -13,35 +15,21 @@ tcp::socket& session::socket() {
     return socket_;
 }
 
-void session::start() {
-    socket_.async_read_some(boost::asio::buffer(data_, max_length),
-                            boost::bind(&session::handle_read, this,
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred));
-}
+boost::system::error_code session::start() {
+    boost::system::error_code error;
+    const size_t length = 
+        socket_.read_some(boost::asio::buffer(data_, max_length), error);
 
-void session::handle_read(const boost::system::error_code& error,
-                          size_t bytes_transferred) {
-    if(!error) {
-        std::string response_ = get_response();
-        boost::asio::async_write(socket_,
-                                 boost::asio::buffer(response_),
-                                 boost::bind(&session::handle_write, this,
-                                 boost::asio::placeholders::error));
-    } else {
-        delete this;
-    }
-}
+    http::server::request req;
+    http::server::request_parser reqParser;
+    std::stringstream buf;
+    buf << data_;
+    std::string input = buf.str();
+    reqParser.parse(req, input.begin(), input.end());
+    std::string response_ = get_response();
+    boost::asio::write(socket_, boost::asio::buffer(response_));
 
-void session::handle_write(const boost::system::error_code& error) {
-    if(!error) {
-        socket_.async_read_some(boost::asio::buffer(data_, max_length),
-                                boost::bind(&session::handle_read, this,
-                                boost::asio::placeholders::error,
-                                boost::asio::placeholders::bytes_transferred));
-    } else {
-      delete this;
-    }
+    return error;
 }
 
 std::string session::get_response() {

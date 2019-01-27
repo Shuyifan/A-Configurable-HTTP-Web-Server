@@ -9,12 +9,9 @@ public:
     session(boost::asio::io_service& io_service);
 
     tcp::socket& socket();
-    void start();
+    boost::system::error_code start();
 
 private:
-    void handle_read(const boost::system::error_code& error,
-      size_t bytes_transferred);
-    void handle_write(const boost::system::error_code& error);
     std::string get_response();
 
     tcp::socket socket_;
