@@ -13,6 +13,7 @@ public:
 
 private:
     std::string get_response();
+    std::string find_content();
 
     tcp::socket socket_;
     enum { max_length = 1024 };
