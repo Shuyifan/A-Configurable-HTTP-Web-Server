@@ -18,6 +18,12 @@ class ConfigParserTest : public ::testing::Test {
     NginxConfigParser parser;
 };
 
+TEST_F(ConfigParserTest, NginxConfigToString) {
+  parser.Parse("example_config", &out_config);
+  std::string str1 = "foo \"bar\";\nserver {\n  listen 80;\n  server_name foo.com;\n  root /home/ubuntu/sites/foo/;\n}\n";
+  EXPECT_TRUE(str1 == out_config.ToString(0));
+}
+
 TEST_F(ConfigParserTest, FileNotExist) {
   EXPECT_FALSE(parser.Parse("example", &out_config));
 }
