@@ -5,10 +5,17 @@
 #include "server.h"
 #include "session.h"
 
-server::server(boost::asio::io_service& io_service, short port)
+
+const int low_invalid_port = 1023;
+const int high_invalid_port = 65536;
+
+server::server(boost::asio::io_service& io_service, int port)
     : io_service_(io_service),
       acceptor_(io_service, tcp::endpoint(tcp::v4(), port)) {
-    
+    if(!this->is_valid(port)) {
+      fprintf(stderr, "Error: Invalid port input");
+      exit(1);
+    }
     start_accept();
 }
 
@@ -28,3 +35,11 @@ void server::start_accept() {
     start_accept();
 
 }
+
+  bool server::is_valid(int port) {
+    if (!(port > low_invalid_port && port < high_invalid_port)) {
+      printf("Invalid port input.\n");
+      return false;
+    }  
+    return true;
+  }
