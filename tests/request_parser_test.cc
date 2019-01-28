@@ -26,3 +26,26 @@ TEST_F(RequestParserTest, ValidRequest) {
     EXPECT_EQ(reqParser.parse(req, request.begin(), request.end()),
                 http::server::request_parser::result_type::good);
 }
+
+TEST_F(RequestParserTest, ValidwithExtraSpace) {
+    std::string request = "GET / HTTP/1.1\r\n" \
+                          "User-Agent: Mozilla/4.0\r\n" \
+                          "\t Connection: Close\r\n\r\n";
+    EXPECT_EQ(reqParser.parse(req, request.begin(), request.end()),
+                http::server::request_parser::result_type::good);
+}
+
+TEST_F(RequestParserTest, ValidwithEmptyLine) {
+    std::string request = "GET / HTTP/1.1\r\n" \
+                          "User-Agent: Mozilla/4.0\r\n" \
+                          "\t \r\n" \
+                          "Connection: Close\r\n\r\n";
+    EXPECT_EQ(reqParser.parse(req, request.begin(), request.end()),
+                http::server::request_parser::result_type::good);
+}
+
+TEST_F(RequestParserTest, InvalidRequest) {
+    std::string request = "GET / HTP/1.1\r\n\r\n";
+    EXPECT_EQ(reqParser.parse(req, request.begin(), request.end()),
+                http::server::request_parser::result_type::bad);
+}
