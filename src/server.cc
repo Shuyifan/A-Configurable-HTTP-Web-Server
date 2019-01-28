@@ -6,7 +6,7 @@
 #include "session.h"
 
 
-const int low_invalid_port = 1023;
+//const int low_invalid_port = 1023;
 const int high_invalid_port = 65536;
 
 server::server(boost::asio::io_service& io_service, int port)
@@ -37,7 +37,7 @@ void server::start_accept() {
 }
 
   bool server::is_valid(int port) {
-    if (port >= high_invalid_port) {
+    if (port >= high_invalid_port || port <= 0) {
       printf("Invalid port input.\n");
       return false;
     }  
