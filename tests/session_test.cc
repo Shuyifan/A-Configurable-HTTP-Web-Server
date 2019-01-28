@@ -20,3 +20,9 @@ TEST_F(SessionTest, GetResponse) {
     EXPECT_FALSE(response.empty());
     EXPECT_EQ(response.substr(0, 17), "HTTP/1.1 200 OK\r\n");
 }
+
+TEST_F(SessionTest, handleValidRequest) {
+    const size_t length = 17;
+    bool request = sess->handleRequest(length);
+    EXPECT_EQ(request, false);
+}
