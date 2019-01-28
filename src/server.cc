@@ -37,7 +37,7 @@ void server::start_accept() {
 }
 
   bool server::is_valid(int port) {
-    if (!(port > low_invalid_port && port < high_invalid_port)) {
+    if (port >= high_invalid_port) {
       printf("Invalid port input.\n");
       return false;
     }  
