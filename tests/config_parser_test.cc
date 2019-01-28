@@ -45,3 +45,7 @@ TEST_F(ConfigParserTest, CompleteConfig) {
 TEST_F(ConfigParserTest, MissingSpace) {
   EXPECT_FALSE(parser.Parse("missing_space", &out_config));
 }
+
+TEST_F(ConfigParserTest, PortNumber) {
+  EXPECT_EQ(parser.getPortNum("listen 1234;"), 1234);
+}
