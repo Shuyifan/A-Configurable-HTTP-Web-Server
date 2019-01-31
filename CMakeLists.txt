@@ -36,7 +36,7 @@ include_directories(include)
 
 # TODO(!): Update name and srcs
 add_library(server_lib src/server.cc src/session.cc src/config_parser.cc 
-                        src/request_parser.cc)
+                        src/request_parser.cc src/request_handler.cc src/echo_handler.cc) 
 
 # TODO(!): Update executable name, srcs, and deps
 add_executable(server src/server_main.cc)
