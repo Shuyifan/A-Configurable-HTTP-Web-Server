@@ -32,16 +32,13 @@ int main(int argc, char* argv[]) {
         NginxConfig config;
         config_parser.Parse(argv[1], &config);
 
-        boost::asio::io_service io_service;
-
-        using namespace std; // For string.
-        string config_str = config.ToString();
-
+        std::string config_str = config.ToString();
         int listen_port = config_parser.getPortNum(config_str);
 
-        server s(io_service, listen_port);
+        server s(listen_port);
 
-        io_service.run();
+        s.run();
+
     } catch(std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }

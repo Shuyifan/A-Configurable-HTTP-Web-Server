@@ -17,10 +17,10 @@ tcp::socket& session::socket() {
 void session::start() {
     printf("Session start\r\n");
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
-                        boost::bind(&session::handle_read,
-                        this,
-                        boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred));
+                        	boost::bind(&session::handle_read,
+                        				this,
+                        				boost::asio::placeholders::error,
+                        				boost::asio::placeholders::bytes_transferred));
 
 }
 
@@ -29,12 +29,13 @@ void session::handle_read(const boost::system::error_code &error,
     if(!error) {
         std::string response;
         bool success = parseRequest(response, bytes_transferred);
-        boost::asio::async_write(socket_, boost::asio::buffer(response),
-                        boost::bind(&session::handle_write, this,
-                        boost::asio::placeholders::error));
+        boost::asio::async_write(socket_, 
+                                 boost::asio::buffer(response),
+                                 boost::bind(&session::handle_write, 
+                                             this,
+                                             boost::asio::placeholders::error));
     } else {
-        printf("Error: %d, %s\n",
-            error.value(), error.message().c_str());
+        printf("Error: %d, %s\n", error.value(), error.message().c_str());
         delete this;
     }
 }
@@ -66,12 +67,11 @@ bool session::parseRequest(std::string& response, const size_t bytes_transferred
 void session::handle_write(const boost::system::error_code &error) {
     if(!error) {
         boost::system::error_code ignored_ec;
-        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
-            ignored_ec);
+        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
         socket_.async_read_some(boost::asio::buffer(data_, max_length),
-                    boost::bind(&session::handle_read, this,
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred));
+                                boost::bind(&session::handle_read, this,
+                                            boost::asio::placeholders::error,
+                                            boost::asio::placeholders::bytes_transferred));
     } else {
         delete this;
     }
