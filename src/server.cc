@@ -1,6 +1,8 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/signal_set.hpp>
+#include <boost/log/trivial.hpp>
 
 #include "server.h"
 #include "session.h"
@@ -14,6 +16,7 @@ server::server(int port)
 		fprintf(stderr, "Error: Invalid port input");
 		exit(1);
     }
+	BOOST_LOG_TRIVIAL(info) << "Server starts";
     start_accept();
 }
 
@@ -27,6 +30,11 @@ void server::start_accept() {
 }
 
 void server::run() {
+	boost::asio::signal_set signals(io_service_, SIGINT);
+	signals.async_wait(boost::bind(&server::handler,
+							       this,
+								   boost::asio::placeholders::error,
+								   SIGINT));
 	io_service_.run();
 }
 
@@ -41,6 +49,11 @@ void server::handle_accept(session *new_session, const boost::system::error_code
 		delete new_session;
 	}
 	start_accept();
+}
+
+void server::handler(const boost::system::error_code& error, int signal_number) {
+    BOOST_LOG_TRIVIAL(info) << "Server shut down";
+    exit(1);
 }
 
 bool server::is_valid(int port) {

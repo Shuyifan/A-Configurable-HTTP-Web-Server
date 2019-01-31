@@ -15,6 +15,8 @@ public:
     void run();
 
 private:
+    // Handle the signal to server;
+    void handler(const boost::system::error_code& error, int signal_number);
 
     // Start the accept operation.
     void start_accept();

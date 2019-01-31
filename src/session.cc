@@ -1,6 +1,8 @@
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/log/trivial.hpp>
+
 #include "session.h"
 #include "request.h"
 #include "request_parser.h"
@@ -15,7 +17,6 @@ tcp::socket& session::socket() {
 }
 
 void session::start() {
-    printf("Session start\r\n");
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
                         	boost::bind(&session::handle_read,
                         				this,
@@ -34,7 +35,8 @@ void session::handle_read(const boost::system::error_code &error,
                                  boost::bind(&session::handle_write, 
                                              this,
                                              boost::asio::placeholders::error));
-    } else {
+    } else if(error.value() != 2) {
+        // error: 2 is just end of file, meaning the request is complete
         printf("Error: %d, %s\n", error.value(), error.message().c_str());
         delete this;
     }
@@ -57,10 +59,10 @@ bool session::parseRequest(std::string& response, const size_t bytes_transferred
     result = reqParser.parse(req, data_, data_ + bytes_transferred);
 
     if(result == http::server::request_parser::good) {
+        BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
         response = get_response();
         return true;
     }
-    printf("Invalid request!\n");
     return false;
 }
 
