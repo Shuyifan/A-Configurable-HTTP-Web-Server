@@ -14,47 +14,67 @@ tcp::socket& session::socket() {
     return socket_;
 }
 
-boost::system::error_code session::start() {
-    boost::system::error_code error;
+void session::start() {
+    printf("Session start\r\n");
+    socket_.async_read_some(boost::asio::buffer(data_, max_length),
+                        boost::bind(&session::handle_read,
+                        this,
+                        boost::asio::placeholders::error,
+                        boost::asio::placeholders::bytes_transferred));
 
-    while(true) {
-        const size_t length = 
-            socket_.read_some(boost::asio::buffer(data_, max_length), error);
+}
 
-        bool success = handleRequest(length);
-        
-        if(error) {
-            break;
-        }
+void session::handle_read(const boost::system::error_code &error,
+                          size_t bytes_transferred) {
+    if(!error) {
+        std::string response;
+        bool success = parseRequest(response, bytes_transferred);
+        boost::asio::async_write(socket_, boost::asio::buffer(response),
+                        boost::bind(&session::handle_write, this,
+                        boost::asio::placeholders::error));
+    } else {
+        printf("Error: %d, %s\n",
+            error.value(), error.message().c_str());
+        delete this;
     }
-    return error;
 }
 
 std::string session::get_response() {
     std::stringstream res;
     res << "HTTP/1.1 200 OK\r\n";
-    res << "Content-Type: text/html\r\n\r\n";
+    res << "Content-Type: text/html\r\n";
+    res << "Connection: close\r\n\r\n";
     res << data_;
     return res.str();
 }
 
-bool session::handleRequest(const size_t length) {
+bool session::parseRequest(std::string& response, const size_t bytes_transferred) {
     http::server::request req;
     http::server::request_parser reqParser;
 
-    std::stringstream buf;
-    buf << data_;
-    std::string input = buf.str();
-
     http::server::request_parser::result_type result;
-    result = reqParser.parse(req, input.begin(), input.end());
+    result = reqParser.parse(req, data_, data_ + bytes_transferred);
 
     if(result == http::server::request_parser::good) {
-        std::string response_ = get_response();
-        boost::asio::write(socket_, boost::asio::buffer(response_));
+        response = get_response();
         return true;
     }
+    printf("Invalid request!\n");
     return false;
+}
+
+void session::handle_write(const boost::system::error_code &error) {
+    if(!error) {
+        boost::system::error_code ignored_ec;
+        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
+            ignored_ec);
+        socket_.async_read_some(boost::asio::buffer(data_, max_length),
+                    boost::bind(&session::handle_read, this,
+                            boost::asio::placeholders::error,
+                            boost::asio::placeholders::bytes_transferred));
+    } else {
+        delete this;
+    }
 }
 
 // std::string session::find_content() {

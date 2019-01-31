@@ -8,12 +8,15 @@ class session {
 public:
     session(boost::asio::io_service& io_service);
     std::string get_response();
-    bool handleRequest(const size_t length);
+    bool parseRequest(std::string& response, const size_t length);
 
     tcp::socket& socket();
-    boost::system::error_code start();
+    void start();
 
 private:
+    void handle_write(const boost::system::error_code &error);
+    void handle_read(const boost::system::error_code &error,
+                          size_t bytes_transferred);
     //std::string find_content();
 
     tcp::socket socket_;

@@ -20,26 +20,31 @@ server::server(boost::asio::io_service& io_service, int port)
 }
 
 void server::start_accept() {
-    session* new_session = new session(io_service_);
-    boost::system::error_code error;
-    acceptor_.accept(new_session->socket(), error);
-
-    if(error) {
-      printf("Connection failed: %d, %s\n",
-             error.value(), error.message().c_str());
-      delete new_session;
-    } else {
-      auto err = new_session->start();
-    }
-
-    start_accept();
-
+	session *new_session = new session(io_service_);
+    acceptor_.async_accept(new_session->socket(),
+                boost::bind(&server::handle_accept, this, new_session,
+                            boost::asio::placeholders::error));
 }
 
-  bool server::is_valid(int port) {
-    if (port >= high_invalid_port || port <= 0) {
-      printf("Invalid port input.\n");
-      return false;
-    }  
-    return true;
-  }
+void server::handle_accept(session *new_session,
+                const boost::system::error_code &error) {
+	if(!acceptor_.is_open()) {
+		return;
+	}
+	if(!error) {
+		new_session->start();
+	} else {
+		printf("Connection failed: %d, %s\n",
+             error.value(), error.message().c_str());
+		delete new_session;
+	}
+	start_accept();
+}
+
+bool server::is_valid(int port) {
+if (port >= high_invalid_port || port <= 0) {
+	printf("Invalid port input.\n");
+	return false;
+}  
+return true;
+}
