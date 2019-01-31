@@ -23,6 +23,8 @@ private:
     
     void handle_accept(session *new_session, const boost::system::error_code &error);
     
+    void initLogging();
+
     // Check whether the port is valid.
     bool is_valid(int port);
 

@@ -14,7 +14,6 @@
 #include <string>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include <boost/log/trivial.hpp>
 
 #include "server.h"
 #include "session.h"
@@ -32,7 +31,6 @@ int main(int argc, char* argv[]) {
         NginxConfigParser config_parser;
         NginxConfig config;
         config_parser.Parse(argv[1], &config);
-        BOOST_LOG_TRIVIAL(info) << "Successfully parse config file";
 
         std::string config_str = config.ToString();
         int listen_port = config_parser.getPortNum(config_str);
