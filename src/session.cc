@@ -60,9 +60,11 @@ bool session::parseRequest(std::string& response, const size_t bytes_transferred
 
     if(result == http::server::request_parser::good) {
         BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
+        BOOST_LOG_TRIVIAL(info) << data_;
         response = get_response();
         return true;
     }
+    BOOST_LOG_TRIVIAL(warning) << "Invalid request";
     return false;
 }
 
