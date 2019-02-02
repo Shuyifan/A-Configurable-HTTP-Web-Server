@@ -4,7 +4,6 @@
 #include <boost/log/trivial.hpp>
 
 #include "session.h"
-#include "request.h"
 #include "request_parser.h"
 #include "echo_handler.h"
 
@@ -53,11 +52,10 @@ std::string session::get_response() {
 }
 
 bool session::parseRequest(std::string& response, const size_t bytes_transferred) {
-    http::server::request req;
     http::server::request_parser reqParser;
 
     http::server::request_parser::result_type result;
-    result = reqParser.parse(req, data_, data_ + bytes_transferred);
+    result = reqParser.parse(request_, data_, data_ + bytes_transferred);
 
     if(result == http::server::request_parser::good) {
         BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
