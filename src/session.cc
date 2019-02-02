@@ -4,7 +4,6 @@
 #include <boost/log/trivial.hpp>
 
 #include "session.h"
-#include "request_parser.h"
 #include "echo_handler.h"
 
 using boost::asio::ip::tcp;
@@ -29,15 +28,33 @@ void session::handle_read(const boost::system::error_code &error,
                           size_t bytes_transferred) {
     if(!error) {
         std::string response;
-        bool success = parseRequest(response, bytes_transferred);
-        boost::asio::async_write(socket_, 
-                                 boost::asio::buffer(response),
-                                 boost::bind(&session::handle_write, 
-                                             this,
-                                             boost::asio::placeholders::error));
+        http::server::request_parser::result_type result;
+        
+        result = request_parser_.parse(request_, data_, data_ + bytes_transferred);
+        
+        if(result == http::server::request_parser::good) {
+            BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
+            BOOST_LOG_TRIVIAL(info) << data_;
+            // TODO: add static file handler and new either
+            // EchoHandler or FileHandler based on request url
+            http::server::RequestHandler* requestHandler = new http::server::EchoHandler();
+            requestHandler->handleRequest(request_, response);
+
+            boost::asio::async_write(socket_, 
+                         boost::asio::buffer(response),
+                         boost::bind(&session::handle_write, 
+                                     this,
+                                     boost::asio::placeholders::error));
+        } else if (result == http::server::request_parser::indeterminate) {
+            start();
+        } else {
+            request_.clear();
+            BOOST_LOG_TRIVIAL(warning) << "Invalid request";
+        }
     } else if(error.value() != 2) {
         // error: 2 is just end of file, meaning the request is complete
         printf("Error: %d, %s\n", error.value(), error.message().c_str());
+        request_.clear();
         delete this;
     }
 }
@@ -51,26 +68,8 @@ std::string session::get_response() {
     return res.str();
 }
 
-bool session::parseRequest(std::string& response, const size_t bytes_transferred) {
-    http::server::request_parser reqParser;
-
-    http::server::request_parser::result_type result;
-    result = reqParser.parse(request_, data_, data_ + bytes_transferred);
-
-    if(result == http::server::request_parser::good) {
-        BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
-        BOOST_LOG_TRIVIAL(info) << data_;
-        // TODO: add static file handler and new either
-        // EchoHandler or FileHandler based on request url
-        http::server::RequestHandler* requestHandler = new http::server::EchoHandler();
-        requestHandler->handleRequest(req, response);
-        return true;
-    }
-    BOOST_LOG_TRIVIAL(warning) << "Invalid request";
-    return false;
-}
-
 void session::handle_write(const boost::system::error_code &error) {
+    request_.clear();
     if(!error) {
         boost::system::error_code ignored_ec;
         socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
