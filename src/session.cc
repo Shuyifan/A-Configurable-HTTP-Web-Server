@@ -6,6 +6,7 @@
 #include "session.h"
 #include "request.h"
 #include "request_parser.h"
+#include "echo_handler.h"
 
 using boost::asio::ip::tcp;
 
@@ -61,7 +62,10 @@ bool session::parseRequest(std::string& response, const size_t bytes_transferred
     if(result == http::server::request_parser::good) {
         BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
         BOOST_LOG_TRIVIAL(info) << data_;
-        response = get_response();
+        // TODO: add static file handler and new either
+        // EchoHandler or FileHandler based on request url
+        http::server::RequestHandler* requestHandler = new http::server::EchoHandler();
+        requestHandler->handleRequest(req, response);
         return true;
     }
     BOOST_LOG_TRIVIAL(warning) << "Invalid request";
