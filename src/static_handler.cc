@@ -52,24 +52,24 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 		return false;
 	}
 	char buf[512];
-	while (is.read(buf, sizeof(buf)).gcount() > 0)
-  
-    res << "Content-Length";
-    //res << std::to_string(rep.content.size());
-    //TODO:put into the right format into the string
-    res << mime_types::extension_to_type(extension);
-    res << "Content-Type";
-    res << "Content-Type";
-    res << "HTTP/1.1 200 OK\r\n";
-    res << "Content-Type: text/html\r\n";
-    res << "Connection: close\r\n\r\n";
-    res << req.method << " " << req.uri << " ";
-    res << "HTTP/" << req.http_version_major << "." << req.http_version_minor << "\r\n";
-    for(header hd : req.headers) {
-        res << hd.name << ": " << hd.value << "\r\n";
-    }
-    res << "\r\n";
-    response = res.str();
+	while (is.read(buf, sizeof(buf)).gcount() > 0) {
+		res << "Content-Length";
+		//res << std::to_string(rep.content.size());
+		//TODO:put into the right format into the string
+		res << mime_types::extension_to_type(extension);
+		res << "Content-Type";
+		res << "Content-Type";
+		res << "HTTP/1.1 200 OK\r\n";
+		res << "Content-Type: text/html\r\n";
+		res << "Connection: close\r\n\r\n";
+		res << req.method << " " << req.uri << " ";
+		res << "HTTP/" << req.http_version_major << "." << req.http_version_minor << "\r\n";
+		for(header hd : req.headers) {
+			res << hd.name << ": " << hd.value << "\r\n";
+		}
+		res << "\r\n";
+		response = res.str();
+	}
 }
 
 bool StaticHandler::url_decode(const std::string& in, std::string& out) {
