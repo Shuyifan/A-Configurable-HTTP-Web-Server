@@ -5,6 +5,7 @@
 
 #include "session.h"
 #include "echo_handler.h"
+#include "static_handler.h"
 
 using boost::asio::ip::tcp;
 
@@ -35,9 +36,19 @@ void session::handle_read(const boost::system::error_code &error,
         if(result == http::server::request_parser::good) {
             BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
             BOOST_LOG_TRIVIAL(info) << data_;
-            // TODO: add static file handler and new either
-            // EchoHandler or FileHandler based on request url
-            http::server::RequestHandler* requestHandler = new http::server::EchoHandler();
+
+            http::server::RequestHandler* requestHandler = nullptr;
+
+            if(request_.uri.find("static") != std::string::npos) {
+                // TODO: set the root in config file
+                std::string root = "/usr/src/projects/cracking-the-web";
+                requestHandler = new http::server::StaticHandler(root);
+            } else {
+                // TODO: else if(find("echo")){...}
+                //       else {...}
+                requestHandler = new http::server::EchoHandler();
+            }
+
             requestHandler->handleRequest(request_, response);
 
             boost::asio::async_write(socket_, 

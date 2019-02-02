@@ -23,15 +23,19 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
     // Decode url to path.
     std::string request_path;
     if(!url_decode(req.uri, request_path)) {
-      //TODO:make the response as bad request
-      //rep = reply::stock_reply(reply::bad_request);
-      return false;
+		// make the response as bad request
+		res << "HTTP/1.1 400 Bad Request\r\n";
+		res << "\r\n";
+		response = res.str();
+		return false;
     }
-    // Request path must be absolute and not contain "..".
-    if(request_path.empty() || request_path[0] != '/'|| request_path.find("..") != std::string::npos) {
-      //TODO:make the response as bad request
-      //rep = reply::stock_reply(reply::bad_request);
-      return false;
+    // Request path must be absolute path and not contain "..".
+    if(request_path.empty() || request_path[0] != '/' || request_path.find("..") != std::string::npos) {
+		// make the response as bad request
+		res << "HTTP/1.1 400 Bad Request\r\n";
+		res << "\r\n";
+		response = res.str();
+		return false;
     }
     
 
@@ -41,35 +45,39 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 	std::string extension;
 	if(last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos) {
 		extension = request_path.substr(last_dot_pos + 1);
+	} else {
+		// file not exist
+		res << "HTTP/1.1 400 Bad Request\r\n";
+		res << "\r\n";
+		res << "File Not Exist!";
+		response = res.str();
+		return false;
 	}
 
 	// Open the file to send back.
 	std::string full_path = doc_root_ + request_path;
 	std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 	if(!is) {
-		//TODO:make the response as bad request
-		//rep = reply::stock_reply(reply::not_found);
-		return false;
-	}
-	char buf[512];
-	while (is.read(buf, sizeof(buf)).gcount() > 0) {
-		res << "Content-Length";
-		//res << std::to_string(rep.content.size());
-		//TODO:put into the right format into the string
-		res << mime_types::extension_to_type(extension);
-		res << "Content-Type";
-		res << "Content-Type";
-		res << "HTTP/1.1 200 OK\r\n";
-		res << "Content-Type: text/html\r\n";
-		res << "Connection: close\r\n\r\n";
-		res << req.method << " " << req.uri << " ";
-		res << "HTTP/" << req.http_version_major << "." << req.http_version_minor << "\r\n";
-		for(header hd : req.headers) {
-			res << hd.name << ": " << hd.value << "\r\n";
-		}
+		// make the response as bad request
+		res << "HTTP/1.1 400 Bad Request\r\n";
 		res << "\r\n";
 		response = res.str();
+		return false;
 	}
+	res << "HTTP/1.1 200 OK\r\n";
+	char buf[512];
+	std::string fileContent = "";
+	while(is.read(buf, sizeof(buf)).gcount() > 0) {
+		fileContent.append(buf, is.gcount());
+	}
+	res << "Content-Length: ";
+	res << std::to_string(fileContent.size()) << "\r\n";
+	res << "Content-type: ";
+	res << mime_types::extension_to_type(extension) << "\r\n";
+	res << "\r\n";
+	res << fileContent;
+	response = res.str();
+	return true;
 }
 
 bool StaticHandler::url_decode(const std::string& in, std::string& out) {

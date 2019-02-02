@@ -17,6 +17,7 @@ bool EchoHandler::handleRequest(const request& req, std::string& response) {
     }
     res << "\r\n";
     response = res.str();
+    return true;
 }
 
 }
