@@ -6,6 +6,7 @@
 #include "session.h"
 #include "echo_handler.h"
 #include "static_handler.h"
+#include "utils.h"
 
 using boost::asio::ip::tcp;
 
@@ -41,7 +42,7 @@ void session::handle_read(const boost::system::error_code &error,
 
             if(request_.uri.find("static") != std::string::npos) {
                 // TODO: set the root in config file
-                std::string root = "/usr/src/projects/cracking-the-web";
+                std::string root = get_server_dir();
                 requestHandler = new http::server::StaticHandler(root);
             } else {
                 // TODO: else if(find("echo")){...}
