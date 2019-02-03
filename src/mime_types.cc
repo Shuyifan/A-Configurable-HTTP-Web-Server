@@ -24,7 +24,11 @@ struct mapping
   { "htm", "text/html" },
   { "html", "text/html" },
   { "jpg", "image/jpeg" },
-  { "png", "image/png" }
+  { "jpeg", "image/jpeg" },
+  { "tar", "application/x-tar" },
+  { "png", "image/png" },
+  { "txt", "text/plain"},
+  { "zip", "application/zip"}
 };
 
 std::string extension_to_type(const std::string& extension)
