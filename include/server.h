@@ -1,4 +1,4 @@
-
+#include <string>
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
@@ -9,7 +9,7 @@ class server {
 public:
 
     // Construct the server to listen on the specified port
-    server(int port);
+    server(int port, std::string base_dir);
 
     // Run the server's io_service loop.
     void run();
@@ -33,4 +33,7 @@ private:
     
     // Acceptor used to listen for incoming connections.
     tcp::acceptor acceptor_;
+
+    // The base directory to serve static file
+    std::string base_dir_;
 };

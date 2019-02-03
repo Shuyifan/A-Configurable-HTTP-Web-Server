@@ -7,7 +7,7 @@ using boost::asio::ip::tcp;
 
 class session {
 public:
-    session(boost::asio::io_service& io_service);
+    session(boost::asio::io_service& io_service, std::string base_dir);
     std::string get_response();
     //bool parseRequest(std::string& response, const size_t length);
 
@@ -38,4 +38,7 @@ private:
 
     // Buffer for incoming data.
     char data_[max_length];
+
+    // Base directory to serve static file.
+    std::string base_dir_;
 };

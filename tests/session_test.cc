@@ -12,7 +12,7 @@ class SessionTest : public ::testing::Test {
     void SetUp() override {}
 
     MockIOService io_service;
-    session* sess = new session(io_service);
+    session* sess = new session(io_service, "/");
 };
 
 TEST_F(SessionTest, GetResponse) {

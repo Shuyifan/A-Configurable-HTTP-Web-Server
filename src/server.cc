@@ -15,8 +15,8 @@
 
 const int high_invalid_port = 65536;
 
-server::server(int port)
-    : io_service_(),
+server::server(int port, std::string base_dir)
+    : io_service_(), base_dir_(base_dir),
 	acceptor_(io_service_, tcp::endpoint(tcp::v4(), port)) {
     if(!this->is_valid(port)) {
 		fprintf(stderr, "Error: Invalid port input");
@@ -26,7 +26,7 @@ server::server(int port)
 }
 
 void server::start_accept() {
-	session *new_session = new session(io_service_);
+	session *new_session = new session(io_service_, base_dir_);
     acceptor_.async_accept(new_session->socket(),
                 		   boost::bind(&server::handle_accept, 
 						   			   this, 

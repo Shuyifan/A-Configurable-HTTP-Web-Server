@@ -34,8 +34,9 @@ int main(int argc, char* argv[]) {
 
         std::string config_str = config.ToString();
         int listen_port = config_parser.getPortNum(config_str);
+        std::string base_dir = config_parser.getBaseDir(config_str);
 
-        server s(listen_port);
+        server s(listen_port, base_dir);
 
         s.run();
 

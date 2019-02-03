@@ -6,12 +6,11 @@
 #include "session.h"
 #include "echo_handler.h"
 #include "static_handler.h"
-#include "utils.h"
 
 using boost::asio::ip::tcp;
 
-session::session(boost::asio::io_service& io_service)
-    : socket_(io_service) {}
+session::session(boost::asio::io_service& io_service, std::string base_dir)
+    : socket_(io_service), base_dir_(base_dir) {}
 
 tcp::socket& session::socket() {
     return socket_;
@@ -41,9 +40,7 @@ void session::handle_read(const boost::system::error_code &error,
             http::server::RequestHandler* requestHandler = nullptr;
 
             if(request_.uri.find("static") != std::string::npos) {
-                // TODO: set the root in config file
-                std::string root = get_server_dir();
-                requestHandler = new http::server::StaticHandler(root);
+                requestHandler = new http::server::StaticHandler(base_dir_);
             } else {
                 // TODO: else if(find("echo")){...}
                 //       else {...}

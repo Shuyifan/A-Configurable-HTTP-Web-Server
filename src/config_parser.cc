@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "config_parser.h"
+#include "utils.h"
 
 std::string NginxConfig::ToString(int depth) {
   std::string serialized_config;
@@ -253,14 +254,24 @@ bool NginxConfigParser::Parse(const char* file_name, NginxConfig* config) {
 
 int NginxConfigParser::getPortNum(std::string parsedStr) {
   int start = parsedStr.find("listen");
-        if(start == -1) {
-            std::cerr << "No listen port in the config file\n";
-        }
-        int end = parsedStr.find(";", start);
-        start = end - 1;
-        while(isdigit(parsedStr[start])) {
-            start--;
-        }
-        int port = stoi(parsedStr.substr(start + 1, end - start - 1));
-        return port;
+  if(start == -1) {
+      std::cerr << "No listen port in the config file\n";
+  }
+  int end = parsedStr.find(";", start);
+  start = end - 1;
+  while(isdigit(parsedStr[start])) {
+      start--;
+  }
+  int port = stoi(parsedStr.substr(start + 1, end - start - 1));
+  return port;
+}
+
+std::string NginxConfigParser::getBaseDir(std::string parsedStr) {
+  int start = parsedStr.find("root");
+  if(start == -1) {
+    std::cerr << "Not found base directory\n";
+  }
+  start = parsedStr.find("/", start);
+  int end = parsedStr.find(";", start);
+  return get_server_dir() + parsedStr.substr(start, end - start);
 }

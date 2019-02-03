@@ -47,7 +47,7 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 		extension = request_path.substr(last_dot_pos + 1);
 	} else {
 		// file not exist
-		res << "HTTP/1.1 400 Bad Request\r\n";
+		res << "HTTP/1.1 404 Not Found\r\n";
 		res << "\r\n";
 		res << "File Not Exist!";
 		response = res.str();
@@ -59,7 +59,7 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 	std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 	if(!is) {
 		// make the response as bad request
-		res << "HTTP/1.1 400 Bad Request\r\n";
+		res << "HTTP/1.1 404 Not Found\r\n";
 		res << "\r\n";
 		response = res.str();
 		return false;
