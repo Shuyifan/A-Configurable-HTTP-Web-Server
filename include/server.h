@@ -27,6 +27,7 @@ private:
     // Do the accept operation.
     void handle_accept(session *new_session, const boost::system::error_code &error);
     
+    // Log settings
     void initLogging();
 
     // Check whether the port is valid.

@@ -9,8 +9,6 @@ class session {
 public:
     session(boost::asio::io_service& io_service, 
             std::map<std::string, std::string>& dir_map);
-    std::string get_response();
-    //bool parseRequest(std::string& response, const size_t length);
 
     tcp::socket& socket();
     

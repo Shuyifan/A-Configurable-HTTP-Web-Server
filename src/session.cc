@@ -72,15 +72,6 @@ void session::handle_read(const boost::system::error_code &error,
     }
 }
 
-std::string session::get_response() {
-    std::stringstream res;
-    res << "HTTP/1.1 200 OK\r\n";
-    res << "Content-Type: text/html\r\n";
-    res << "Connection: close\r\n\r\n";
-    res << data_;
-    return res.str();
-}
-
 void session::handle_write(const boost::system::error_code &error) {
     request_.clear();
     if(!error) {
@@ -94,13 +85,3 @@ void session::handle_write(const boost::system::error_code &error) {
         delete this;
     }
 }
-
-// std::string session::find_content() {
-//     std::string temp = data_;
-//     size_t start = temp.find("\r\n\r\n");
-//     if(start + 4 != temp.size()) {
-//         return temp.substr(start + 4);
-//     } else {
-//         return "";
-//     }
-// }
