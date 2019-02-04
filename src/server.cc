@@ -94,7 +94,7 @@ void server::initLogging() {
 
     boost::log::add_file_log(
         boost::log::keywords::file_name =
-			"%Y-%m-%d-server%3N.log",
+			"log/%Y-%m-%d-server%3N.log",
 		boost::log::keywords::rotation_size =
 			10 * 1024 * 1024,
 		boost::log::keywords::time_based_rotation =

@@ -44,8 +44,11 @@ void session::handle_read(const boost::system::error_code &error,
             http::server::RequestHandler* requestHandler = nullptr;
 
             if(dir_map_[get_upper_dir(request_.uri)] == "/files/static") {
+                BOOST_LOG_TRIVIAL(info) << "Request static file ";
+                BOOST_LOG_TRIVIAL(info) << get_file_name(request_.uri);
                 requestHandler = new http::server::StaticHandler(dir_map_);
             } else if(dir_map_[request_.uri] == ".") {
+                BOOST_LOG_TRIVIAL(info) << "Request for echo";
                 requestHandler = new http::server::EchoHandler();
             } else {
                 requestHandler = new http::server::DefaultHandler();
@@ -63,10 +66,11 @@ void session::handle_read(const boost::system::error_code &error,
         } else {
             request_.clear();
             BOOST_LOG_TRIVIAL(warning) << "Invalid request";
+            BOOST_LOG_TRIVIAL(info) << data_;
         }
     } else if(error.value() != 2) {
         // error: 2 is just end of file, meaning the request is complete
-        printf("Error: %d, %s\n", error.value(), error.message().c_str());
+        BOOST_LOG_TRIVIAL(error) << "Error: " << error.value() << ", " << error.message().c_str();
         request_.clear();
         delete this;
     }
