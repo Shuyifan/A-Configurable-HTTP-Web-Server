@@ -1,9 +1,6 @@
-#include <iostream>
-#include <sstream>
 #include <string>
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-//#include "request.h"
+#include "request.h"
 #include "echo_handler.h"
 
 class EchoHandlerTest : public ::testing::Test {
@@ -20,3 +17,13 @@ TEST_F(EchoHandlerTest, NormalRequest) {
     EXPECT_EQ(test, true);
 }
 
+TEST_F(EchoHandlerTest, EchoRequest) {
+    std::string res;
+    //std::string request = "GET / HTTP/1.1\r\n\r\n";
+    request_.method = "GET";
+    request_.uri = "/";
+    request_.http_version_major = 1;
+    request_.http_version_minor = 1;
+    bool test = requestHandler->handleRequest(request_, res);
+    EXPECT_EQ(res, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nGET / HTTP/1.1\r\n\r\n");
+}
