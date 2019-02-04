@@ -12,7 +12,6 @@ class EchoHandlerTest : public ::testing::Test {
 
 TEST_F(EchoHandlerTest, NormalRequest) {
     std::string res;
-    //std::string request = "GET / HTTP/1.1\r\n\r\n";
     bool test = requestHandler->handleRequest(request_, res);
     EXPECT_EQ(test, true);
 }
