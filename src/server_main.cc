@@ -31,11 +31,7 @@ int main(int argc, char* argv[]) {
         NginxConfig config;
         config_parser.Parse(argv[1], &config);
 
-        std::string config_str = config.ToString();
-        int listen_port = config_parser.getPortNum(config_str);
-        std::string base_dir = config_parser.getBaseDir(config_str);
-
-        server s(base_dir, config);
+        server s(config);
         s.start_accept();
         s.run();
 

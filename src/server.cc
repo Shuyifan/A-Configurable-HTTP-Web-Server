@@ -15,9 +15,8 @@
 
 const int high_invalid_port = 65536;
 
-server::server(std::string base_dir, NginxConfig config)
+server::server(const NginxConfig& config)
     : io_service_(), 
-	base_dir_(base_dir),
 	acceptor_(io_service_) {
     
 	for(const auto& statement : config.statements_) {
@@ -25,7 +24,6 @@ server::server(std::string base_dir, NginxConfig config)
 		if(tokens[0] == "listen") {
 			if(tokens.size() >= 2) {
 				port_ = stoi(tokens[1]);
-				printf("%i\r\n", port_);
 				if(!this->is_valid(port_)) {
 					fprintf(stderr, "Error: Invalid port input");
 					exit(1);
@@ -34,14 +32,14 @@ server::server(std::string base_dir, NginxConfig config)
 				fprintf(stderr, "Error: Invalid port input");
 				exit(1);
 			}
-		} /**else if(tokens[0] == "path") {
+		} else if(tokens[0] == "path") {
 			if(tokens.size() >= 3) {
-				dirMap[tokens[1]] = tokens[2];
+				dir_map_[tokens[1]] = tokens[2];
 			} else {
 				fprintf(stderr, "Error: Invalid path input");
 				exit(1);
 			}
-		}**/
+		}
 	}
 
 	boost::asio::ip::tcp::resolver resolver(io_service_);
@@ -53,7 +51,7 @@ server::server(std::string base_dir, NginxConfig config)
 }
 
 void server::start_accept() {
-	session *new_session = new session(io_service_, base_dir_);
+	session *new_session = new session(io_service_, dir_map_);
     acceptor_.async_accept(new_session->socket(),
                 		   boost::bind(&server::handle_accept, 
 						   			   this, 

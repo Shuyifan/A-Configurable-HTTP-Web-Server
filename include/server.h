@@ -1,5 +1,7 @@
 #include <string>
 #include <boost/asio.hpp>
+#include <map>
+#include <string>
 #include "config_parser.h"
 
 using boost::asio::ip::tcp;
@@ -10,7 +12,7 @@ class server {
 public:
 
     // Construct the server to listen on the specified port
-    server(std::string base_dir, NginxConfig config);
+    server(const NginxConfig& config);
 
     // Start the first accept operation.
     void start_accept();
@@ -36,9 +38,9 @@ private:
     // Acceptor used to listen for incoming connections.
     tcp::acceptor acceptor_;
 
-    // The base directory to serve static file
-    std::string base_dir_;
-
     // The port where the server is going to listen to
     int port_;
+
+    // The map which map the URI to a specific path of the server
+    std::map<std::string, std::string> dir_map_;
 };

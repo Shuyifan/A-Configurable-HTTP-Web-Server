@@ -7,7 +7,8 @@ using boost::asio::ip::tcp;
 
 class session {
 public:
-    session(boost::asio::io_service& io_service, std::string base_dir);
+    session(boost::asio::io_service& io_service, 
+            std::map<std::string, std::string>& dir_map);
     std::string get_response();
     //bool parseRequest(std::string& response, const size_t length);
 
@@ -39,6 +40,6 @@ private:
     // Buffer for incoming data.
     char data_[max_length];
 
-    // Base directory to serve static file.
-    std::string base_dir_;
+    // The map which map the URI to a specific path of the server
+    std::map<std::string, std::string> dir_map_;
 };

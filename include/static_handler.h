@@ -1,5 +1,6 @@
 #ifndef STATIC_HANDLER_H
 #define STATIC_HANDLER_H
+#include <map>
 #include "request_handler.h"
 #include "request.h"
 #include "header.h"
@@ -10,7 +11,7 @@ class StaticHandler : public RequestHandler {
 public:
 	StaticHandler() {}
 	/// Construct with a directory containing files to be served.
-	explicit StaticHandler(const std::string& doc_root);
+	explicit StaticHandler(std::map<std::string, std::string>& dir_map);
 	
 	virtual bool handleRequest(const request& req, std::string& response) override;
 	/// Perform URL-decoding on a string. Returns false if the encoding was
@@ -18,8 +19,8 @@ public:
 	static bool url_decode(const std::string& in, std::string& out);
 	
 private:
-	/// The directory containing the files to be served.
-	std::string doc_root_;
+	// The map which map the URI to a specific path of the server
+    std::map<std::string, std::string> dir_map_;
 };
 }
 }

@@ -8,20 +8,23 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include "static_handler.h"
+#include "utils.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <map>
 namespace http {
 namespace server {
-StaticHandler::StaticHandler(const std::string& doc_root)
-  : doc_root_(doc_root) {}
+StaticHandler::StaticHandler(std::map<std::string, std::string>& dir_map)
+  : dir_map_(dir_map) {}
 
 bool StaticHandler::handleRequest(const request& req, std::string& response) {
     std::stringstream res;
 
     // Decode url to path.
     std::string request_path;
+
     if(!url_decode(req.uri, request_path)) {
 		// make the response as bad request
 		res << "HTTP/1.1 400 Bad Request\r\n";
@@ -37,7 +40,6 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 		response = res.str();
 		return false;
     }
-    
 
 	// Determine the file extension.
 	std::size_t last_slash_pos = request_path.find_last_of("/");
@@ -55,7 +57,10 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 	}
 
 	// Open the file to send back.
-	std::string full_path = doc_root_ + request_path;
+	std::string full_path = get_server_dir() + 
+							dir_map_[get_upper_dir(request_path)] +
+					     	get_file_name(request_path);
+
 	std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 	if(!is) {
 		// make the response as bad request
