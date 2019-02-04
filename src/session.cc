@@ -6,6 +6,7 @@
 #include "session.h"
 #include "echo_handler.h"
 #include "static_handler.h"
+#include "default_handler.h"
 #include "utils.h"
 
 using boost::asio::ip::tcp;
@@ -44,10 +45,10 @@ void session::handle_read(const boost::system::error_code &error,
 
             if(dir_map_[get_upper_dir(request_.uri)] == "/files/static") {
                 requestHandler = new http::server::StaticHandler(dir_map_);
-            } else {
-                // TODO: else if(find("echo")){...}
-                //       else {...}
+            } else if(dir_map_[request_.uri] == ".") {
                 requestHandler = new http::server::EchoHandler();
+            } else {
+                requestHandler = new http::server::DefaultHandler();
             }
 
             requestHandler->handleRequest(request_, response);
