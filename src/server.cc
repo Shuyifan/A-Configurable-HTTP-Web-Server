@@ -15,14 +15,41 @@
 
 const int high_invalid_port = 65536;
 
-server::server(int port, std::string base_dir)
-    : io_service_(), base_dir_(base_dir),
-	acceptor_(io_service_, tcp::endpoint(tcp::v4(), port)) {
-    if(!this->is_valid(port)) {
-		fprintf(stderr, "Error: Invalid port input");
-		exit(1);
-    }
-    start_accept();
+server::server(std::string base_dir, NginxConfig config)
+    : io_service_(), 
+	base_dir_(base_dir),
+	acceptor_(io_service_) {
+    
+	for(const auto& statement : config.statements_) {
+		const std::vector<std::string> tokens = statement->tokens_;
+		if(tokens[0] == "listen") {
+			if(tokens.size() >= 2) {
+				port_ = stoi(tokens[1]);
+				printf("%i\r\n", port_);
+				if(!this->is_valid(port_)) {
+					fprintf(stderr, "Error: Invalid port input");
+					exit(1);
+				}
+			} else {
+				fprintf(stderr, "Error: Invalid port input");
+				exit(1);
+			}
+		} /**else if(tokens[0] == "path") {
+			if(tokens.size() >= 3) {
+				dirMap[tokens[1]] = tokens[2];
+			} else {
+				fprintf(stderr, "Error: Invalid path input");
+				exit(1);
+			}
+		}**/
+	}
+
+	boost::asio::ip::tcp::resolver resolver(io_service_);
+	boost::asio::ip::tcp::endpoint endpoint(tcp::v4(), port_);
+	acceptor_.open(endpoint.protocol());
+    acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+	acceptor_.bind(endpoint);
+	acceptor_.listen();
 }
 
 void server::start_accept() {

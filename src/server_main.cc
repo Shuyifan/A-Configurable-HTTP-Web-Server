@@ -17,7 +17,6 @@
 
 #include "server.h"
 #include "session.h"
-#include "config_parser.h"
 
 using boost::asio::ip::tcp;
 
@@ -36,8 +35,8 @@ int main(int argc, char* argv[]) {
         int listen_port = config_parser.getPortNum(config_str);
         std::string base_dir = config_parser.getBaseDir(config_str);
 
-        server s(listen_port, base_dir);
-
+        server s(base_dir, config);
+        s.start_accept();
         s.run();
 
     } catch(std::exception& e) {
