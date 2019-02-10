@@ -50,9 +50,9 @@ void session::handle_read(const boost::system::error_code &error,
                 requestHandler = new http::server::StaticHandler(dir_map_);
             } else if(dir_map_[request_.uri].dir == ".") {
                 BOOST_LOG_TRIVIAL(info) << "Request for echo";
-                requestHandler = new http::server::EchoHandler();
+                requestHandler = new http::server::EchoHandler(dir_map_);
             } else {
-                requestHandler = new http::server::DefaultHandler();
+                requestHandler = new http::server::DefaultHandler(dir_map_);
             }
 
             requestHandler->handleRequest(request_, response);

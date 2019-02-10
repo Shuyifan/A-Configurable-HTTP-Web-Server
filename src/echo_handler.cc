@@ -5,6 +5,12 @@
 namespace http {
 namespace server {
 
+EchoHandler::EchoHandler() {}
+
+EchoHandler::EchoHandler(std::map<std::string, 
+  							      http::server::handler_parameter>& dir_map)
+  : http::server::RequestHandler(dir_map) {}
+
 bool EchoHandler::handleRequest(const request& req, std::string& response) {
     std::stringstream res;
     res << "HTTP/1.1 200 OK\r\n";

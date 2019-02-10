@@ -8,7 +8,12 @@ namespace http {
 namespace server {
 class EchoHandler : public RequestHandler {
 public:
-	EchoHandler() {}
+
+	EchoHandler();
+	/// Construct with a directory containing files to be served.
+	EchoHandler(std::map<std::string, 
+	    				 http::server::handler_parameter>& dir_map);
+
 	virtual bool handleRequest(const request& req, std::string& response) override;
 };
 }
