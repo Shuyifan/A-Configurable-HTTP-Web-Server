@@ -16,7 +16,8 @@
 #include <map>
 namespace http {
 namespace server {
-StaticHandler::StaticHandler(std::map<std::string, std::string>& dir_map)
+StaticHandler::StaticHandler(std::map<std::string, 
+																		  http::server::handler_parameter>& dir_map)
   : dir_map_(dir_map) {}
 
 bool StaticHandler::handleRequest(const request& req, std::string& response) {
@@ -58,7 +59,7 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 
 	// Open the file to send back.
 	std::string full_path = get_server_dir() + 
-							dir_map_[get_upper_dir(request_path)] +
+							dir_map_[get_upper_dir(request_path)].dir +
 					     	get_file_name(request_path);
 
 	std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);

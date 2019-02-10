@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include "config_parser.h"
+#include "handler_parameter.h"
 
 using boost::asio::ip::tcp;
 
@@ -43,5 +44,5 @@ private:
     int port_;
 
     // The map which map the URI to a specific path of the server
-    std::map<std::string, std::string> dir_map_;
+    std::map<std::string, http::server::handler_parameter> dir_map_;
 };

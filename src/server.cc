@@ -33,8 +33,10 @@ server::server(const NginxConfig& config)
 				exit(1);
 			}
 		} else if(tokens[0] == "path") {
-			if(tokens.size() >= 3) {
-				dir_map_[tokens[1]] = tokens[2];
+			if(tokens.size() >= 4) {
+				http::server::handler_parameter temp;
+				temp.dir = tokens[3];
+				dir_map_[tokens[2]] = temp;
 			} else {
 				fprintf(stderr, "Error: Invalid path input");
 				exit(1);

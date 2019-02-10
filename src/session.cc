@@ -12,7 +12,8 @@
 using boost::asio::ip::tcp;
 
 session::session(boost::asio::io_service& io_service, 
-                 std::map<std::string, std::string>& dir_map)
+                 std::map<std::string, 
+                          http::server::handler_parameter>& dir_map)
     : socket_(io_service), 
     dir_map_(dir_map) {}
 
@@ -43,11 +44,11 @@ void session::handle_read(const boost::system::error_code &error,
 
             http::server::RequestHandler* requestHandler = nullptr;
 
-            if(dir_map_[get_upper_dir(request_.uri)] == "/files/static") {
+            if(dir_map_[get_upper_dir(request_.uri)].dir == "/files/static") {
                 BOOST_LOG_TRIVIAL(info) << "Request static file ";
                 BOOST_LOG_TRIVIAL(info) << get_file_name(request_.uri);
                 requestHandler = new http::server::StaticHandler(dir_map_);
-            } else if(dir_map_[request_.uri] == ".") {
+            } else if(dir_map_[request_.uri].dir == ".") {
                 BOOST_LOG_TRIVIAL(info) << "Request for echo";
                 requestHandler = new http::server::EchoHandler();
             } else {
@@ -57,10 +58,10 @@ void session::handle_read(const boost::system::error_code &error,
             requestHandler->handleRequest(request_, response);
 
             boost::asio::async_write(socket_, 
-                         boost::asio::buffer(response),
-                         boost::bind(&session::handle_write, 
-                                     this,
-                                     boost::asio::placeholders::error));
+                                     boost::asio::buffer(response),
+                                     boost::bind(&session::handle_write, 
+                                                 this,
+                                                 boost::asio::placeholders::error));
         } else if (result == http::server::request_parser::indeterminate) {
             start();
         } else {

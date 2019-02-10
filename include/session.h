@@ -2,13 +2,15 @@
 #include <boost/asio.hpp>
 #include "request.h"
 #include "request_parser.h"
+#include "handler_parameter.h"
 
 using boost::asio::ip::tcp;
 
 class session {
 public:
     session(boost::asio::io_service& io_service, 
-            std::map<std::string, std::string>& dir_map);
+            std::map<std::string, 
+                     http::server::handler_parameter>& dir_map);
 
     tcp::socket& socket();
     
@@ -39,5 +41,5 @@ private:
     char data_[max_length];
 
     // The map which map the URI to a specific path of the server
-    std::map<std::string, std::string> dir_map_;
+    std::map<std::string, http::server::handler_parameter> dir_map_;
 };

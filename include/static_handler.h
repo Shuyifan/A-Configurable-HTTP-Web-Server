@@ -5,13 +5,16 @@
 #include "request.h"
 #include "header.h"
 #include "mime_types.h"
+#include "handler_parameter.h"
+
 namespace http {
 namespace server {
 class StaticHandler : public RequestHandler {
 public:
 	StaticHandler() {}
 	/// Construct with a directory containing files to be served.
-	explicit StaticHandler(std::map<std::string, std::string>& dir_map);
+	explicit StaticHandler(std::map<std::string, 
+								    http::server::handler_parameter>& dir_map);
 	
 	virtual bool handleRequest(const request& req, std::string& response) override;
 	/// Perform URL-decoding on a string. Returns false if the encoding was
@@ -20,7 +23,7 @@ public:
 	
 private:
 	// The map which map the URI to a specific path of the server
-    std::map<std::string, std::string> dir_map_;
+    std::map<std::string, http::server::handler_parameter> dir_map_;
 };
 }
 }
