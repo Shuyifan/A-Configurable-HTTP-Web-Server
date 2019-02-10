@@ -1,28 +1,34 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "server.h"
-
-class ServerTest : public ::testing::Test {   
-protected:
-    NginxConfig out_config;
-    NginxConfigParser parser;
+#include "session.h"
+/*
+class ServerTest : public ::testing::Test {
+  protected:
 };
 
-TEST_F(ServerTest, invalidPort) {
-    parser.Parse("server_test/invalid_port1.conf", &out_config);
-    EXPECT_EXIT(server server(out_config), 
-                ::testing::ExitedWithCode(1), 
-                "Error: Invalid port input");
 
-    parser.Parse("server_test/invalid_port2.conf", &out_config);
-    EXPECT_EXIT(server server(out_config), 
-                ::testing::ExitedWithCode(1), 
-                "Error: Invalid port input");
+class MockSession : public session {
+public:
+    MOCK_METHOD0(handle_write,void(const boost::system::error_code));
+    MOCK_METHOD1(handle_read,void(const boost::system::error_code,size_t));
+    MOCK_METHOD2(start,void());
+};
 
-    parser.Parse("server_test/invalid_port3.conf", &out_config);
-    EXPECT_EXIT(server server(out_config), 
-                ::testing::ExitedWithCode(1), 
-                "Error: Invalid port input");
+TEST(ServerTest，TryTest){
+    MockSession mb;
+    server s;
+    
+    NginxConfigParser config_parser;
+    NginxConfig config;
+    config_parser.Parse(" ../conf/deploy.conf ", &config);
+    server s(config);
+    EXPECT_CALL(mb,start()).Times(1)
+}*/
+/**
+TEST_F(ServerTest, invalidPort1) {
+    EXPECT_EXIT(server server(-1, "/"), 
+                ::testing::ExitedWithCode(1), "Error: Invalid port input");
 }
 
 TEST_F(ServerTest, invalidPath) {
