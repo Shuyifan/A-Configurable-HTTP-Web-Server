@@ -3,9 +3,9 @@
 # $? means exit status
 # $! means current process id
 
-PATH_FOR_SERVER="../build/bin/server ../conf/deploy.conf"
-PATH_TO_ECHO_OUTPUT="echo_output"
-PATH_TO_ECHO_EXPECTED="echo_output_expected"
+PATH_FOR_SERVER="../build/bin/server test.conf"
+PATH_TO_ECHO_OUTPUT="echo/echo_output"
+PATH_TO_ECHO_EXPECTED="echo/echo_output_expected"
 PATH_TO_STATIC_EXPECT="static/expect/test.txt"
 PATH_TO_STATIC_OUT="static/current/test.txt"
 PATH_TO_STATIC_EXPECT_JPG="static/expect/test.jpg"
@@ -13,7 +13,7 @@ PATH_TO_STATIC_OUT_JPG="static/current/test.jpg"
 PATH_TO_STATIC_EXPECT_HTML="static/expect/index.html"
 PATH_TO_STATIC_OUT_HTML="static/current/index.html"
 FLAG=0 
-PORT=80
+PORT=12345
 timeout 3  $PATH_FOR_SERVER  & > /dev/null 2> /dev/null
 PID=$!
 # Here -X specify the port I am using
@@ -21,7 +21,7 @@ PID=$!
 # -d Send the specified data in an (HTTP) POST request
 # check if the curl request work
 curl -X POST -sS http://localhost:$PORT/echo -d "FISTTEST" -o $PATH_TO_ECHO_OUTPUT
-# cmp -n 20  $PATH_TO_ECHO_OUTPUT $PATH_TO_ECHO_EXPECTED
+cmp -n 20  $PATH_TO_ECHO_OUTPUT $PATH_TO_ECHO_EXPECTED
 current=$?;
 if [ $current -eq 0 ]
 then
