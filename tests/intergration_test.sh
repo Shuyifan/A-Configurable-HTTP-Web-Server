@@ -4,6 +4,10 @@
 # $! means current process id
 
 PATH_FOR_SERVER="../build/bin/server test.conf"
+if [ ! -d "../build" ]; then
+    echo "here"
+    PATH_FOR_SERVER="../build_coverage/bin/server test.conf"
+fi
 PATH_TO_ECHO_OUTPUT="echo/echo_output"
 PATH_TO_ECHO_EXPECTED="echo/echo_output_expected"
 PATH_TO_STATIC_EXPECT="static/expect/test.txt"
