@@ -113,7 +113,7 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 
 std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const request& request) {
 
-	std::unique_ptr<http::server::Response> response_;
+	std::unique_ptr<http::server::Response> response_ (new http::server::Response);
 
 	// Decode url to path.
     std::string request_path;

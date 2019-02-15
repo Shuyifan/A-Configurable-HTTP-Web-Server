@@ -40,7 +40,7 @@ bool DefaultHandler::handleRequest(const request& req, std::string& response) {
 }
 
 std::unique_ptr<http::server::Response> DefaultHandler::HandlerRequest(const request& request) {
-    std::unique_ptr<http::server::Response> response_;
+    std::unique_ptr<http::server::Response> response_ (new http::server::Response);
     response_->SetVersion("HTTP/1.1 200\r\n");
     response_->SetStatus(Response::ok);
     response_->AddHeader("Content-Type", "text/html\r\n");
