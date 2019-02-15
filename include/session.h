@@ -14,14 +14,24 @@ public:
 
     tcp::socket& socket();
     
-    // Start the first asynchronous operation for the connection.
+    /**
+    Start the first asynchronous operation for the connection.
+    */
     void start();
 
 private:
-    // Perform an asynchronous read operation.
+
+    /**
+    Perform an asynchronous read operation.Log the information at the same time
+    This will call different types of handler according to the path
+    */
+   
     void handle_write(const boost::system::error_code &error);
     
-    // Perform an asynchronous write operation.
+    /**
+    Perform an asynchronous write operation.
+    @param boost::system::error_code, bytes_transferred
+    */
     void handle_read(const boost::system::error_code &error,
                           size_t bytes_transferred);
     

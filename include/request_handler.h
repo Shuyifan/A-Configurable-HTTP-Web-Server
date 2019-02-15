@@ -14,10 +14,19 @@ class RequestHandler {
 public:
 	RequestHandler();
 	
+	/**
+	Construct a RequestHandler
+	@param  string and dir_map
+	*/
 	RequestHandler(std::map<std::string, 
 				   			http::server::handler_parameter>& dir_map);
 
-	// Handle a parsed HTTP request, and generates a response
+
+	/**
+	Handle a parsed HTTP request, and generates a response
+	@param  request object
+	@return response object
+	*/
 	virtual bool handleRequest(const request& req, std::string& response) = 0;
 
 	virtual std::unique_ptr<http::server::Response> HandlerRequest(const request& request) = 0;

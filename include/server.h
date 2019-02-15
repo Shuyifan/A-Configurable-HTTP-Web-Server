@@ -12,26 +12,52 @@ class session;
 class server {
 public:
 
-    // Construct the server to listen on the specified port
+    /**
+    Construct the server to listen on the specified port
+    @param NginxCongif 
+    */
     server(const NginxConfig& config);
-
-    // Start the first accept operation.
+    
+    /**
+    Start the first accept operation.
+    */
     void start_accept();
 
-    // Run the server's io_service loop.
+    /**
+    Run the server's io_service loop and start logging 
+    the information about the server
+    */
     void run();
 
 private:
-    // Handle the signal to server;
+    
+    /**
+    Handle the signal to server and log the error
+
+    @param boost::system::error_code, signal_number
+    @return 
+    */
     void handler(const boost::system::error_code& error, int signal_number);
     
-    // Do the accept operation.
+    /**
+    Do the accept operation
+
+    @param boost::system::error_code, signal_number
+    @return 
+    */
     void handle_accept(session *new_session, const boost::system::error_code &error);
-    
-    // Log settings
+     
+    /**
+    Prepare the log file and log settings using boost log library
+    */
     void initLogging();
 
-    // Check whether the port is valid.
+    /**
+    Check whether the port is valid.
+
+    @param integer port number
+    @return bool of is it valid or not
+    */
     bool is_valid(int port);
 
     // The io_service used to perform asynchronous operations.
