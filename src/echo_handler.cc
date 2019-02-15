@@ -33,8 +33,31 @@ bool EchoHandler::handleRequest(const request& req, std::string& response) {
 }
 
 std::unique_ptr<http::server::Response> EchoHandler::HandlerRequest(const request& request) {
-    return nullptr;
+    std::unique_ptr<http::server::Response> response_;
+    response_->SetVersion("HTTP/1.1 200\r\n");
+    response_->SetStatus(Response::ok);
+    response_->SetMime("text/plain");
+    response_->AddHeader("Content-Type", response_->GetMime());
+    std::string echo;
+    echo.append(request.method);
+    echo.append(" ");
+    echo.append(request.uri);
+    echo.append(" ");
+    echo.append("HTTP/");
+    echo.append(std::to_string(request.http_version_major));
+    echo.append(".");
+    echo.append(std::to_string(request.http_version_minor));
+    echo.append(" ");
+    echo.append("\r\n");
+    for(header hd : request.headers) {
+        echo.append(hd.name);
+        echo.append(": ");
+        echo.append(hd.value);
+        echo.append("\r\n");
+    }
+    echo.append("\r\n");
+    response_->SetContent(echo);
+    return response_;
 }
-
 }
 }

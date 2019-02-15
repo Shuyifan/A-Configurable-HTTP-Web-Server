@@ -31,6 +31,29 @@ struct request
     uri = "";
     headers.clear();
   }
+
+  std::string rawString() {
+    std::string request;
+    request.append(method);
+    request.append(" ");
+    request.append(uri);
+    request.append(" ");
+    request.append("HTTP/");
+    request.append(std::to_string(http_version_major));
+    request.append(".");
+    request.append(std::to_string(http_version_minor));
+    request.append(" ");
+    request.append("\r\n");
+    for(header hd : headers) {
+        request.append(hd.name);
+        request.append(": ");
+        request.append(hd.value);
+        request.append("\r\n");
+    }
+    request.append("\r\n");
+    return request;
+  }
+  
 };
 
 } // namespace server

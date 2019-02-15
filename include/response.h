@@ -49,6 +49,14 @@ namespace server {
             mime_types = mime;
         }
 
+        std::string GetMime() {
+            return mime_types;
+        }
+
+        void SetVersion(const std::string& version_) {
+            version = version_;
+        }
+
         std::string ToString();
 
         private:
@@ -58,6 +66,7 @@ namespace server {
             ResponseCode rescode;
             //std::string string_result;
             std::string resString(ResponseCode status);
+            std::string version;
         
     };
 }
