@@ -26,7 +26,24 @@ StaticHandler::StaticHandler(std::map<std::string,
 http::server::RequestHandler* StaticHandler::create(const NginxConfig& config, 
                                                     const std::string& root_path) {
     http::server::StaticHandler* handler = new http::server::StaticHandler();
+		std::string url;
+		http::server::handler_parameter temp_param;
+		for(const auto& statement : config.statements_) {
+			const std::vector<std::string> tokens = statement->tokens_;
+			if(tokens[0] == "location") {
+				url = root_path + tokens[1];
+			} else if(tokens[0] == "root") {
+				temp_param.dir = tokens[1];
+			} else if(tokens[0] == "log") {
+				temp_param.log = tokens[1];
+			}
+		}
+		handler->setParameter(url, temp_param);
     return handler;
+}
+
+void StaticHandler::setParameter(std::string url, http::server::handler_parameter tempParam) {
+	param[url] = tempParam;
 }
 
 bool StaticHandler::handleRequest(const request& req, std::string& response) {
