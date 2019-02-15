@@ -11,6 +11,12 @@ EchoHandler::EchoHandler(std::map<std::string,
   							      http::server::handler_parameter>& dir_map)
   : http::server::RequestHandler(dir_map) {}
 
+http::server::RequestHandler* EchoHandler::create(const NginxConfig& config, 
+                                                  const std::string& root_path) {
+    http::server::EchoHandler* handler = new http::server::EchoHandler();
+    return handler;
+}
+
 bool EchoHandler::handleRequest(const request& req, std::string& response) {
     std::stringstream res;
     res << "HTTP/1.1 200 OK\r\n";
@@ -24,6 +30,10 @@ bool EchoHandler::handleRequest(const request& req, std::string& response) {
     res << "\r\n";
     response = res.str();
     return true;
+}
+
+std::unique_ptr<http::server::Response> EchoHandler::HandlerRequest(const request& request) {
+    return nullptr;
 }
 
 }

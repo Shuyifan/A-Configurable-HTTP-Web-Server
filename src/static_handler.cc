@@ -23,6 +23,12 @@ StaticHandler::StaticHandler(std::map<std::string,
 																		  http::server::handler_parameter>& dir_map)
   : http::server::RequestHandler(dir_map) {}
 
+http::server::RequestHandler* StaticHandler::create(const NginxConfig& config, 
+                                                    const std::string& root_path) {
+    http::server::StaticHandler* handler = new http::server::StaticHandler();
+    return handler;
+}
+
 bool StaticHandler::handleRequest(const request& req, std::string& response) {
     std::stringstream res;
 
@@ -86,6 +92,10 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 	res << fileContent;
 	response = res.str();
 	return true;
+}
+
+std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const request& request) {
+    return nullptr;
 }
 
 bool StaticHandler::url_decode(const std::string& in, std::string& out) {
