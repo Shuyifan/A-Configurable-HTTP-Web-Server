@@ -112,7 +112,59 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 }
 
 std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const request& request) {
-    return nullptr;
+
+	std::unique_ptr<http::server::Response> response_;
+
+	// Decode url to path.
+    std::string request_path;
+
+    if(!url_decode(request.uri, request_path)) {
+		// make the response as bad request
+		response_->SetStatus(Response::bad_request);
+		return response_;
+    }
+
+	// Request path must be absolute path and not contain "..".
+	if(request_path.empty() || request_path[0] != '/' || request_path.find("..") != std::string::npos) {
+		// make the response as bad request
+		response_->SetStatus(Response::bad_request);
+		return response_;
+	}
+
+	// Determine the file extension.
+	std::size_t last_slash_pos = request_path.find_last_of("/");
+	std::size_t last_dot_pos = request_path.find_last_of(".");
+	std::string extension;
+	if(last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos) {
+		extension = request_path.substr(last_dot_pos + 1);
+	}
+	else { // file not exist
+		response_->SetStatus(Response::not_found);
+		response_->SetContent("File Not Exist!");
+		return response_;
+	}
+
+	// Open the file to send back.
+	std::string full_path = get_server_dir() + dir_map_[get_upper_dir(request_path)].dir + get_file_name(request_path);
+	std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
+	if(!is) {
+		// make the response as bad request
+		response_->SetStatus(Response::bad_request);
+		return response_;
+	}
+	response_->SetVersion("HTTP/1.1 200\r\n");
+	response_->SetStatus(Response::ok);
+	char buf[512];
+	std::string fileContent = "";
+	while(is.read(buf, sizeof(buf)).gcount() > 0) {
+		fileContent.append(buf, is.gcount());
+	}
+	response_->SetMime(std::to_string(fileContent.size()));
+	response_->AddHeader("Content-Length", response_->GetMime());
+	response_->SetMime(mime_types::extension_to_type(extension));
+	response_->AddHeader("Content-Type", response_->GetMime());
+	response_->SetContent(fileContent);
+	return response_;
 }
 
 bool StaticHandler::url_decode(const std::string& in, std::string& out) {
