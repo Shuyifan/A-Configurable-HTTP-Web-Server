@@ -20,4 +20,3 @@ class StaticHandlerTest : public ::testing::Test {
 // TEST_F(StaticHandlerTest, BadUri) {
     
 // }
-//现在比较好写的测试有util.cc里的get_file_name, get_upper_dir。static_handler.cc里的uri_decoder。server.cc里的server，initLogging。这些
