@@ -41,25 +41,24 @@ bool DefaultHandler::handleRequest(const request& req, std::string& response) {
 
 std::unique_ptr<http::server::Response> DefaultHandler::HandlerRequest(const request& request) {
     std::unique_ptr<http::server::Response> response_ (new http::server::Response);
-    response_->SetVersion("HTTP/1.1 200\r\n");
-    response_->SetStatus(Response::ok);
-    response_->AddHeader("Content-Type", "text/html\r\n");
-    std::string def;
-    def.append("\r\n");
-    def.append("<h1>Thanks for visiting</h1>");
-    def.append("<h2>For static file server, go to</h2>");
-    def.append("<h3>/static/index.html</h3>");
-    def.append("<h3>/static/test.jpg</h3>");
-    def.append("<h3>/static/test.txt</h3>");
-    def.append("<h3>/static/test.zip</h3>");
-    def.append("<h2>Or</h2>");
-    def.append("<h3>/foo/index.html</h3>");
-    def.append("<h3>/foo/test.jpg</h3>");
-    def.append("<h3>/foo/test.txt</h3>");
-    def.append("<h3>/foo/test.zip</h3>");
-    def.append("<h2>For echo server, go to</h2>");
-    def.append("<h3>/echo</h3>");
-    response_->SetContent(def);
+    response_->SetVersion("1.1");
+    response_->SetStatus(http::server::Response::ok);
+    response_->AddHeader("Content-Type", "text/html");
+    std::stringstream res;
+    res << "<h1>Thanks for visiting</h1>";
+    res << "<h2>For static file server, go to</h2>";
+    res << "<h3>/static/index.html</h3>";
+    res << "<h3>/static/test.jpg</h3>";
+    res << "<h3>/static/test.txt</h3>";
+    res << "<h3>/static/test.zip</h3>";
+    res << "<h2>Or</h2>";
+    res << "<h3>/foo/index.html</h3>";
+    res << "<h3>/foo/test.jpg</h3>";
+    res << "<h3>/foo/test.txt</h3>";
+    res << "<h3>/foo/test.zip</h3>";
+    res << "<h2>For echo server, go to</h2>";
+    res << "<h3>/echo</h3>";
+    response_->SetContent(res.str());
     return response_;
 }
 }
