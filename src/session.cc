@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/log/trivial.hpp>
@@ -7,15 +8,15 @@
 #include "echo_handler.h"
 #include "static_handler.h"
 #include "default_handler.h"
-#include "utils.h"
+#include "handler_manager.h"
+#include "response.h"
 
 using boost::asio::ip::tcp;
 
 session::session(boost::asio::io_service& io_service, 
-                 std::map<std::string, 
-                          http::server::handler_parameter>& dir_map)
+                 http::server::HandlerManager& handlerManager)
     : socket_(io_service), 
-    dir_map_(dir_map) {}
+    handlerManager_(handlerManager) {}
 
 tcp::socket& session::socket() {
     return socket_;
@@ -42,23 +43,14 @@ void session::handle_read(const boost::system::error_code &error,
             BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
             BOOST_LOG_TRIVIAL(info) << data_;
 
-            http::server::RequestHandler* requestHandler = nullptr;
+            std::unique_ptr<http::server::RequestHandler> requestHandler =
+                handlerManager_.createByUrl(request_.uri);
 
-            if(dir_map_[get_upper_dir(request_.uri)].dir == "/files/static") {
-                BOOST_LOG_TRIVIAL(info) << "Request static file ";
-                BOOST_LOG_TRIVIAL(info) << get_file_name(request_.uri);
-                requestHandler = new http::server::StaticHandler(dir_map_);
-            } else if(dir_map_[request_.uri].dir == ".") {
-                BOOST_LOG_TRIVIAL(info) << "Request for echo";
-                requestHandler = new http::server::EchoHandler(dir_map_);
-            } else {
-                requestHandler = new http::server::DefaultHandler(dir_map_);
-            }
-
-            requestHandler->handleRequest(request_, response);
+            std::unique_ptr<http::server::Response> resp =
+                requestHandler->HandlerRequest(request_);
 
             boost::asio::async_write(socket_, 
-                                     boost::asio::buffer(response),
+                                     boost::asio::buffer(resp->ToString()),
                                      boost::bind(&session::handle_write, 
                                                  this,
                                                  boost::asio::placeholders::error));

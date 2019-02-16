@@ -22,7 +22,7 @@ public:
     @param boost::system::error_code, signal_number
     @return 
     */
-	HandlerManager(NginxConfig& config);
+	HandlerManager(const NginxConfig& config);
 	/**
     name represent what type of handler it is, reset the RequestHandler according to the name
 
@@ -47,7 +47,7 @@ private:
     @param string inner_config of config file
     @return string of current location parameter
     */
-	std::string getLocation(NginxConfig& inner_config);
+	std::string getLocation(std::unique_ptr<NginxConfig>& inner_config);
 	//map the url to handler_factory_parameter
 	std::map<std::string, http::server::handler_factory_parameter> param;
 	//base directory location

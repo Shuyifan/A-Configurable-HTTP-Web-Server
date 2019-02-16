@@ -12,11 +12,12 @@
 
 #include "server.h"
 #include "session.h"
+#include "handler_manager.h"
 
 const int high_invalid_port = 65536;
 
 server::server(const NginxConfig& config)
-    : io_service_(), 
+    : io_service_(), handlerManager_(config),
 	acceptor_(io_service_) {
     
 	for(const auto& statement : config.statements_) {
@@ -32,15 +33,6 @@ server::server(const NginxConfig& config)
 				fprintf(stderr, "Error: Invalid port input");
 				exit(1);
 			}
-		} else if(tokens[0] == "path") {
-			if(tokens.size() >= 4) {
-				http::server::handler_parameter temp;
-				temp.dir = tokens[3];
-				dir_map_[tokens[2]] = temp;
-			} else {
-				fprintf(stderr, "Error: Invalid path input");
-				exit(1);
-			}
 		}
 	}
 
@@ -53,7 +45,7 @@ server::server(const NginxConfig& config)
 }
 
 void server::start_accept() {
-	session *new_session = new session(io_service_, dir_map_);
+	session *new_session = new session(io_service_, handlerManager_);
     acceptor_.async_accept(new_session->socket(),
                 		   boost::bind(&server::handle_accept, 
 						   			   this, 

@@ -3,13 +3,13 @@
 namespace http {
 namespace server {
 
-HandlerManager::HandlerManager(NginxConfig& config) {
+HandlerManager::HandlerManager(const NginxConfig& config) {
     for(const auto& statement : config.statements_) {
 		const std::vector<std::string> tokens = statement->tokens_;
 		if(tokens[0] == "root") {
 			base_dir = tokens[1];
         } else if(tokens[0] == "handler") {
-            std::string url = getLocation(*statement->child_block_);
+            std::string url = getLocation(statement->child_block_);
             http::server::handler_factory_parameter temp;
             temp.config = *statement->child_block_;
             temp.handler_name = tokens[1];
@@ -44,8 +44,8 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByUrl(const 
     }
 } 
 
-std::string getLocation(NginxConfig& inner_config) {
-    for(const auto& statement : inner_config.statements_) {
+std::string HandlerManager::getLocation(std::unique_ptr<NginxConfig>& inner_config) {
+    for(const auto& statement : inner_config->statements_) {
 		const std::vector<std::string> tokens = statement->tokens_;
 		if(tokens[0] == "location") {
 			return tokens[1];
