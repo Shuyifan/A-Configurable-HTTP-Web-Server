@@ -1,4 +1,5 @@
 #include "handler_manager.h"
+#include <boost/log/trivial.hpp>
 #include "utils.h"
 namespace http {
 namespace server {
@@ -24,8 +25,10 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     std::unique_ptr<http::server::RequestHandler> handler;
     if(name == "static") {
         handler.reset(http::server::StaticHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "Request for static file server";
     } else if(name == "echo") {
         handler.reset(http::server::EchoHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "Request for echo server";
     } else {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
     }

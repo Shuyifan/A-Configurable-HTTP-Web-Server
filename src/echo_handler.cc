@@ -34,29 +34,17 @@ bool EchoHandler::handleRequest(const request& req, std::string& response) {
 
 std::unique_ptr<http::server::Response> EchoHandler::HandlerRequest(const request& request) {
     std::unique_ptr<http::server::Response> response_ (new http::server::Response);
-    response_->SetVersion("HTTP/1.1 200\r\n");
-    response_->SetStatus(Response::ok);
-    response_->SetMime("text/plain");
-    response_->AddHeader("Content-Type", response_->GetMime());
-    std::string echo;
-    echo.append(request.method);
-    echo.append(" ");
-    echo.append(request.uri);
-    echo.append(" ");
-    echo.append("HTTP/");
-    echo.append(std::to_string(request.http_version_major));
-    echo.append(".");
-    echo.append(std::to_string(request.http_version_minor));
-    echo.append(" ");
-    echo.append("\r\n");
+    response_->SetVersion("1.1");
+    response_->SetStatus(http::server::Response::ok);
+    response_->AddHeader("Content-Type", "text/plain");
+    std::stringstream req;
+    req << request.method << " " << request.uri << " ";
+    req << "HTTP/" << request.http_version_major << "." << request.http_version_minor << "\r\n";
     for(header hd : request.headers) {
-        echo.append(hd.name);
-        echo.append(": ");
-        echo.append(hd.value);
-        echo.append("\r\n");
+        req << hd.name << ": " << hd.value << "\r\n";
     }
-    echo.append("\r\n");
-    response_->SetContent(echo);
+    req << "\r\n";
+    response_->SetContent(req.str());
     return response_;
 }
 }

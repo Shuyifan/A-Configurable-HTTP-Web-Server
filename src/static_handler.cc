@@ -159,10 +159,10 @@ std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const requ
 	while(is.read(buf, sizeof(buf)).gcount() > 0) {
 		fileContent.append(buf, is.gcount());
 	}
-	response_->SetMime(std::to_string(fileContent.size()));
-	response_->AddHeader("Content-Length", response_->GetMime());
-	response_->SetMime(mime_types::extension_to_type(extension));
-	response_->AddHeader("Content-Type", response_->GetMime());
+	// response_->SetMime(std::to_string(fileContent.size()));
+	// response_->AddHeader("Content-Length", response_->GetMime());
+	// response_->SetMime(mime_types::extension_to_type(extension));
+	// response_->AddHeader("Content-Type", response_->GetMime());
 	response_->SetContent(fileContent);
 	return response_;
 }
