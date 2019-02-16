@@ -1,4 +1,5 @@
 #include "handler_manager.h"
+#include "utils.h"
 namespace http {
 namespace server {
 
@@ -32,7 +33,15 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
 } 
 
 std::unique_ptr<http::server::RequestHandler> HandlerManager::createByUrl(const std::string& url) {
-    return createByName(param[url].handler_name, param[url].config, base_dir);
+    std::string upper_dir = url;
+    while(!upper_dir.empty() && param.find(upper_dir) == param.end()) {
+        upper_dir = get_upper_dir(upper_dir);
+    }
+    if(!upper_dir.empty()) {
+        return createByName(param[url].handler_name, param[url].config, base_dir);
+    } else {
+        return createByName("default", param.begin()->second.config, base_dir);
+    }
 } 
 
 std::string getLocation(NginxConfig& inner_config) {
