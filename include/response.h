@@ -31,7 +31,7 @@ public:
     };
 
     Response() {
-        version_ = "HTTP/1.1";
+        version_ = "1.1";
     }
     void SetStatus(const StatusCode status_code) {
         status_code_ = status_code;
@@ -54,7 +54,6 @@ public:
 
     std::string ToString();
 
-    std::string GetStringResult(StatusCode status);
 
     private:
         std::string mime_type_;

@@ -35,5 +35,5 @@ TEST_F(EchoHandlerTest, EchoRequest_) {
     request_.http_version_minor = 1;
     response_ = requestHandler->HandlerRequest(request_);
     std::string res = response_->ToString();
-    EXPECT_EQ(res, "HTTP/1.1 200 OK\r\nContent-Length: 18\r\nContent-Type: text/plain\r\nGET / HTTP/1.1\r\n\r\n");
+    EXPECT_EQ(res, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nGET / HTTP/1.1\r\n\r\n");
 }
