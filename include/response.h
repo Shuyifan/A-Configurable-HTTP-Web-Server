@@ -29,9 +29,14 @@ public:
         bad_gateway = 502,
         service_unavailable = 503
     };
+
+    Response() {
+        version_ = "HTTP/1.1";
+    }
     void SetStatus(const StatusCode status_code) {
         status_code_ = status_code;
     }
+
     StatusCode GetStatus(){
         return status_code_;
     }
@@ -48,6 +53,8 @@ public:
     }
 
     std::string ToString();
+
+    std::string GetStringResult(StatusCode status);
 
     private:
         std::string mime_type_;

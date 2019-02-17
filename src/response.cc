@@ -1,6 +1,5 @@
 #include "response.h"
 #include <iostream>
-#include <sstream>
 namespace http {
 namespace server {
 
@@ -8,53 +7,63 @@ namespace server {
         switch (status) {
 
             case ok:
-                return  "200 OK\r\n";
+                return  "OK";
             case created:
-                return  "201 Created\r\n";
+                return  "Created";
             case accepted:
-                return  "202 Accepted\r\n";
+                return  "Accepted";
             case  no_content:
-                return "204 No Content\r\n";
+                return "No Content";
             case  multiple_choices:
-                return  "300 Multiple Choices\r\n";
+                return  "Multiple Choices";
             case  moved_permanently:
-                return  "301 Moved Permanently\r\n";
+                return  "Moved Permanently";
             case  moved_temporarily:
-                return "302 Moved Temporarily\r\n";
+                return "Moved Temporarily";
             case  not_modified:
-                return "304 Not Modified\r\n";
+                return "Not Modified";
             case  bad_request:
-                return "400 Bad Request\r\n";
+                return "Bad Request";
             case  unauthorized:
-                return "401 Unauthorized\r\n";
+                return "Unauthorized";
             case  forbidden:
-                return  "403 Forbidden\r\n";
+                return  "Forbidden";
             case  not_found:
-                return  "404 Not Found\r\n";
+                return  "Not Found";
             case  internal_server_error:
-                return  "500 Internal Server Error\r\n";
+                return  "Internal Server Error";
             case  not_implemented:
-                return  "501 Not Implemented\r\n";
+                return  "Not Implemented";
             case  bad_gateway:
-                return  "502 Bad Gateway\r\n";;
+                return  "Bad Gateway";;
             case  service_unavailable:
-                return  "503 Service Unavailable\r\n";
+                return  "Service Unavailable";
             default:
-                return  "400 Bad Request\r\n";
+                return  "Bad Request";
         }
     }
-    
     std::string Response::ToString() {
-        std::stringstream response;
-        response << "HTTP/" << version_ << resString(status_code_);
+
+        headers["Content-Length"] = std::to_string(content_.length());
+        std::string response = "";
+        response.append(version_ + " " + std::to_string((int)status_code_));
+        response.append(" ");
+        response.append(resString(status_code_));
+        response.append("\r\n");
         for (auto p = headers.begin(); p != headers.end(); p++) {
-            response << p->first << ": ";
-            response << p->second << "\r\n";
+            response.append(p->first);
+            response.append(": ");
+            response.append(p->second);
+            response.append("\r\n");
         }
-        response << "\r\n";
-        response << content_;
-        return response.str();
-    }   
+        response.append(content_);
+        //std::cout << response;
+        return response;
+    }
     
-} // namespace server
-} // namespace http
+    std::string Response::GetStringResult(StatusCode status)
+    {
+        return resString(status);
+    }
+}
+}

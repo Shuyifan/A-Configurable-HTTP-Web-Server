@@ -1,7 +1,4 @@
-POST /echo HTTP/1.1
-Host: localhost:12345
-User-Agent: curl/7.58.0
-Accept: */*
-Content-Length: 8
-Content-Type: application/x-www-form-urlencoded
-
+1.1 200 OK
+Content-Length: 314
+Content-Type: text/html
+<h1>Thanks for visiting</h1><h2>For static file server, go to</h2><h3>/static/index.html</h3><h3>/static/test.jpg</h3><h3>/static/test.txt</h3><h3>/static/test.zip</h3><h2>Or</h2><h3>/foo/index.html</h3><h3>/foo/test.jpg</h3><h3>/foo/test.txt</h3><h3>/foo/test.zip</h3><h2>For echo server, go to</h2><h3>/echo</h3>
