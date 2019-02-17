@@ -41,7 +41,7 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByUrl(const 
         upper_dir = get_upper_dir(upper_dir);
     }
     if(!upper_dir.empty()) {
-        return createByName(param[url].handler_name, param[url].config, base_dir);
+        return createByName(param[upper_dir].handler_name, param[upper_dir].config, base_dir);
     } else {
         return createByName("default", param.begin()->second.config, base_dir);
     }

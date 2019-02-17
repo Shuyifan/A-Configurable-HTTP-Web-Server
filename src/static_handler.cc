@@ -31,9 +31,9 @@ http::server::RequestHandler* StaticHandler::create(const NginxConfig& config,
 		for(const auto& statement : config.statements_) {
 			const std::vector<std::string> tokens = statement->tokens_;
 			if(tokens[0] == "location") {
-				url = root_path + tokens[1];
+				url = tokens[1];
 			} else if(tokens[0] == "root") {
-				temp_param.dir = tokens[1];
+				temp_param.dir = root_path + "/" + tokens[1];
 			} else if(tokens[0] == "log") {
 				temp_param.log = tokens[1];
 			}
@@ -114,20 +114,21 @@ bool StaticHandler::handleRequest(const request& req, std::string& response) {
 std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const request& request) {
 
 	std::unique_ptr<http::server::Response> response_ (new http::server::Response);
+	response_->SetVersion("1.1");
 
 	// Decode url to path.
     std::string request_path;
 
     if(!url_decode(request.uri, request_path)) {
 		// make the response as bad request
-		response_->SetStatus(Response::bad_request);
+		response_->SetStatus(http::server::Response::bad_request);
 		return response_;
     }
 
 	// Request path must be absolute path and not contain "..".
 	if(request_path.empty() || request_path[0] != '/' || request_path.find("..") != std::string::npos) {
 		// make the response as bad request
-		response_->SetStatus(Response::bad_request);
+		response_->SetStatus(http::server::Response::bad_request);
 		return response_;
 	}
 
@@ -139,30 +140,27 @@ std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const requ
 		extension = request_path.substr(last_dot_pos + 1);
 	}
 	else { // file not exist
-		response_->SetStatus(Response::not_found);
+		response_->SetStatus(http::server::Response::not_found);
 		response_->SetContent("File Not Exist!");
 		return response_;
 	}
 
 	// Open the file to send back.
-	std::string full_path = get_server_dir() + dir_map_[get_upper_dir(request_path)].dir + get_file_name(request_path);
+	std::string full_path = get_server_dir() + param.begin()->second.dir + "/" + get_file_name(request_path);
 	std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 	if(!is) {
 		// make the response as bad request
-		response_->SetStatus(Response::bad_request);
+		response_->SetStatus(http::server::Response::bad_request);
 		return response_;
 	}
-	response_->SetVersion("HTTP/1.1 200\r\n");
-	response_->SetStatus(Response::ok);
+	response_->SetStatus(http::server::Response::ok);
 	char buf[512];
 	std::string fileContent = "";
 	while(is.read(buf, sizeof(buf)).gcount() > 0) {
 		fileContent.append(buf, is.gcount());
 	}
-	// response_->SetMime(std::to_string(fileContent.size()));
-	// response_->AddHeader("Content-Length", response_->GetMime());
-	// response_->SetMime(mime_types::extension_to_type(extension));
-	// response_->AddHeader("Content-Type", response_->GetMime());
+	response_->AddHeader("Content-Length", std::to_string(fileContent.size()));
+	response_->AddHeader("Content-type", mime_types::extension_to_type(extension));
 	response_->SetContent(fileContent);
 	return response_;
 }
