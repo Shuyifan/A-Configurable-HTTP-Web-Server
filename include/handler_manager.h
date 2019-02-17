@@ -20,7 +20,7 @@ public:
     Construct Handler Manager, first save the path of base directory
 	then map the url to handler_factory_parameter
 
-    @param boost::system::error_code, signal_number
+    @param NginxConfig file
     @return 
     */
 	HandlerManager(const NginxConfig& config);

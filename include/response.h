@@ -11,6 +11,7 @@ namespace http {
 namespace server {
 class Response {
 public:
+    //this includes the status code,setter and getter function of response
     enum StatusCode {
         ok = 200,
         created = 201,
