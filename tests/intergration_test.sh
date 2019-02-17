@@ -18,7 +18,7 @@ PATH_TO_STATIC_EXPECT_HTML="static/expect/index.html"
 PATH_TO_STATIC_OUT_HTML="static/current/index.html"
 FLAG=0 
 PORT=12345
-timeout 3  $PATH_FOR_SERVER  & > /dev/null 2> /dev/null
+timeout 100  $PATH_FOR_SERVER  & > /dev/null 2> /dev/null
 PID=$!
 # Here -X specify the port I am using
 # -sS not show progress but to show errors 
