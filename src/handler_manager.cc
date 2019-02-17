@@ -29,6 +29,9 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "echo") {
         handler.reset(http::server::EchoHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Request for echo server";
+    } else if(name == "error") {
+        handler.reset(http::server::ErrorHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "Error Handler called";
     } else {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
     }

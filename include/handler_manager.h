@@ -7,6 +7,7 @@
 #include "static_handler.h"
 #include "echo_handler.h"
 #include "default_handler.h"
+#include "error_handler.h"
 #include "config_parser.h"
 #include "handler_parameter.h"
 
