@@ -5,7 +5,6 @@
 
 PATH_FOR_SERVER="../build/bin/server test.conf"
 if [ ! -d "../build" ]; then
-    echo "here"
     PATH_FOR_SERVER="../build_coverage/bin/server test.conf"
 fi
 PATH_TO_ECHO_OUTPUT="echo/echo_output"
@@ -52,7 +51,7 @@ else
 fi
 
 
-curl -X POST -sS http://localhost:$PORT/ -d "THIRDTEST" -o $PATH_TO_STATUS_OUTPUT
+curl -X POST -sS http://localhost:$PORT/status -d "THIRDTEST" -o $PATH_TO_STATUS_OUTPUT
 cmp -n 20  $PATH_TO_STATUS_OUTPUT $PATH_TO_STATUS_EXPECTED
 current=$?;
 if [ $current -eq 0 ]
