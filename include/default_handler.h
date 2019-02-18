@@ -10,10 +10,6 @@ namespace server {
 class DefaultHandler : public RequestHandler {
 public:
 
-	DefaultHandler();
-	/// Construct with a directory containing files to be served.
-	DefaultHandler(std::map<std::string, 
-	    				   http::server::handler_parameter>& dir_map);
 	/**
 	Create a echo handler according to the config file and root path.
 	@param  NgixnConfig file and root path
@@ -22,7 +18,6 @@ public:
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 
-	virtual bool handleRequest(const request& req, std::string& response) override;
 	/**
 	Given a request, this function will prepare a Response object 
 	@param  request obejct

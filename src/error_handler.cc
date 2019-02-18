@@ -13,10 +13,6 @@ RequestHandler* ErrorHandler::create(const NginxConfig& config,
     return handler;
 }
 
-bool ErrorHandler::handleRequest(const request& req, std::string& response) {
-    return true;
-}
-
 std::unique_ptr<http::server::Response> ErrorHandler::HandlerRequest(const request& request) {
     std::unique_ptr<Response> response_ (new Response);
     response_->SetStatus(Response::not_found);

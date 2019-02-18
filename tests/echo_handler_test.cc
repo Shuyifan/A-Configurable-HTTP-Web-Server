@@ -10,6 +10,7 @@ class EchoHandlerTest : public ::testing::Test {
     http::server::RequestHandler* requestHandler = new http::server::EchoHandler();
 };
 
+/**
 TEST_F(EchoHandlerTest, NormalRequest) {
     std::string res;
     bool test = requestHandler->handleRequest(request_, res);
@@ -25,7 +26,7 @@ TEST_F(EchoHandlerTest, EchoRequest) {
     request_.http_version_minor = 1;
     bool test = requestHandler->handleRequest(request_, res);
     EXPECT_EQ(res, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nGET / HTTP/1.1\r\n\r\n");
-}
+}**/
 
 TEST_F(EchoHandlerTest, EchoRequest_) {
     std::unique_ptr<http::server::Response> response_;
