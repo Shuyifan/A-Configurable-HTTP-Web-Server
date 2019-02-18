@@ -56,6 +56,11 @@ namespace server {
         return response.str();
     }   
 
+    std::string Response::getStatusLine() {
+        std::stringstream statusLine;
+        statusLine << "HTTP/" << version_ << " " << resString(status_code_);
+        return statusLine.str();
+    }
     
 } // namespace server
 } // namespace http

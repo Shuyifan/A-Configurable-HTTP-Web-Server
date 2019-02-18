@@ -55,6 +55,7 @@ public:
 
     std::string ToString();
 
+    std::string getStatusLine();
 
     private:
         std::string mime_type_;

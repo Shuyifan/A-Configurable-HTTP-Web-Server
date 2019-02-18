@@ -49,6 +49,9 @@ void session::handle_read(const boost::system::error_code &error,
             std::unique_ptr<http::server::Response> resp =
                 requestHandler->HandlerRequest(request_);
 
+            http::server::HandlerManager::addCount();
+            http::server::HandlerManager::addReqResp(request_.uri, resp->getStatusLine());
+
             boost::asio::async_write(socket_, 
                                      boost::asio::buffer(resp->ToString()),
                                      boost::bind(&session::handle_write, 

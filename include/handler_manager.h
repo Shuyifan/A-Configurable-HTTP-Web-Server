@@ -3,11 +3,13 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <vector>
 #include "request_handler.h"
 #include "static_handler.h"
 #include "echo_handler.h"
 #include "default_handler.h"
 #include "error_handler.h"
+#include "status_handler.h"
 #include "config_parser.h"
 #include "handler_parameter.h"
 
@@ -41,6 +43,22 @@ public:
     */
 	std::unique_ptr<http::server::RequestHandler> createByUrl(const std::string& url);
 
+    static void addCount() {
+        count++;
+    }
+
+    static int getCount() {
+        return count;
+    }
+
+    static void addReqResp(std::string uri, std::string statusLine) {
+        reqResp.push_back({uri, statusLine});
+    }
+
+    static std::vector<std::pair<std::string, std::string>> getReqResp() {
+        return reqResp;
+    }
+
 private:
 	/**
     Get the location of current file 
@@ -53,6 +71,12 @@ private:
 	std::map<std::string, http::server::handler_factory_parameter> param;
 	//base directory location
 	std::string base_dir;
+
+    // Count the number of requests the server receives
+    static int count;
+
+    // URL requested and response status line
+    static std::vector<std::pair<std::string, std::string>> reqResp;
 };
 
 }

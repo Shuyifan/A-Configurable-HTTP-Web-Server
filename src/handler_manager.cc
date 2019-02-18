@@ -4,6 +4,9 @@
 namespace http {
 namespace server {
 
+int HandlerManager::count = 0;
+std::vector<std::pair<std::string, std::string>> HandlerManager::reqResp;
+
 HandlerManager::HandlerManager(const NginxConfig& config) {
     for(const auto& statement : config.statements_) {
 		const std::vector<std::string> tokens = statement->tokens_;
@@ -12,8 +15,12 @@ HandlerManager::HandlerManager(const NginxConfig& config) {
         } else if(tokens[0] == "handler") {
             std::string url = getLocation(statement->child_block_);
             http::server::handler_factory_parameter temp;
-            temp.config = *statement->child_block_;
             temp.handler_name = tokens[1];
+            if(temp.handler_name == "status") {
+                temp.config = config;
+            } else {
+                temp.config = *statement->child_block_;
+            }
             param[url] = temp;
         }
 	}
@@ -32,6 +39,9 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "error") {
         handler.reset(http::server::ErrorHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Error Handler called";
+    } else if(name == "status") {
+        handler.reset(http::server::StatusHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "Status Handler called";
     } else {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
     }
