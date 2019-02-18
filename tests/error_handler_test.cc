@@ -17,8 +17,6 @@ TEST_F(ErrorHandlerTest, errorHandlerTest) {
     request_.http_version_minor = 1;
     response_ = requestHandler->HandlerRequest(request_);
     std::string res = response_->ToString();
-    std::cout << "******************" << std::endl;
-    std::cout << res << std::endl;std::cout << "******************" << std::endl;
     EXPECT_EQ(res, "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n"\
                    "<h1>404: Page Not Found</h1>");
 }

@@ -6,6 +6,8 @@
 #include "request_handler.h"
 #include "echo_handler.h"
 #include "static_handler.h"
+#include "error_handler.h"
+#include "default_handler.h"
 
 class HandlerManagerTest : public ::testing::Test {
 protected:
@@ -31,6 +33,15 @@ TEST_F(HandlerManagerTest, createByNameTest) {
 
 	temp_ptr = handler_manager.createByName("static", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::StaticHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("error", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::DefaultHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("unknown", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::DefaultHandler::create(emptyConfig, ""))));
 }
 
 TEST_F(HandlerManagerTest, createByUrlTest) {
