@@ -10,6 +10,10 @@ if [ ! -d "../build" ]; then
 fi
 PATH_TO_ECHO_OUTPUT="echo/echo_output"
 PATH_TO_ECHO_EXPECTED="echo/echo_output_expected"
+PATH_TO_ERROR_OUTPUT="error/error_output"
+PATH_TO_ERROR_EXPECTED="error/error_output_expected"
+PATH_TO_STATUS_OUTPUT="status/status_output"
+PATH_TO_STATUS_EXPECTED="status/status_output_expected"
 PATH_TO_STATIC_EXPECT="static/expect/test.txt"
 PATH_TO_STATIC_OUT="static/current/test.txt"
 PATH_TO_STATIC_EXPECT_JPG="static/expect/test.jpg"
@@ -20,12 +24,36 @@ FLAG=0
 PORT=12345
 timeout 100  $PATH_FOR_SERVER  & > /dev/null 2> /dev/null
 PID=$!
+
 # Here -X specify the port I am using
 # -sS not show progress but to show errors 
 # -d Send the specified data in an (HTTP) POST request
 # check if the curl request work
 curl -X POST -sS http://localhost:$PORT/echo -d "FISTTEST" -o $PATH_TO_ECHO_OUTPUT
 cmp -n 20  $PATH_TO_ECHO_OUTPUT $PATH_TO_ECHO_EXPECTED
+current=$?;
+if [ $current -eq 0 ]
+then
+    echo "Success"
+else
+    FLAG=$((FLAG+1))
+    echo "Fail"
+fi
+
+curl -X POST -sS http://localhost:$PORT/ -d "SECONDTEST" -o $PATH_TO_ERROR_OUTPUT
+cmp -n 20  $PATH_TO_ERROR_OUTPUT $PATH_TO_ERROR_EXPECTED
+current=$?;
+if [ $current -eq 0 ]
+then
+    echo "Success"
+else
+    FLAG=$((FLAG+1))
+    echo "Fail"
+fi
+
+
+curl -X POST -sS http://localhost:$PORT/ -d "THIRDTEST" -o $PATH_TO_STATUS_OUTPUT
+cmp -n 20  $PATH_TO_STATUS_OUTPUT $PATH_TO_STATUS_EXPECTED
 current=$?;
 if [ $current -eq 0 ]
 then
@@ -84,3 +112,4 @@ else
     echo "Fail intergration test"
     exit 1
 fi
+
