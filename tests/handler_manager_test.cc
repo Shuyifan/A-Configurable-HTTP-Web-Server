@@ -38,10 +38,10 @@ TEST_F(HandlerManagerTest, createByNameTest) {
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
 
 	temp_ptr = handler_manager.createByName("", emptyConfig, "");
-	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::DefaultHandler::create(emptyConfig, ""))));
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
 
 	temp_ptr = handler_manager.createByName("unknown", emptyConfig, "");
-	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::DefaultHandler::create(emptyConfig, ""))));
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
 }
 
 TEST_F(HandlerManagerTest, createByUrlTest) {
