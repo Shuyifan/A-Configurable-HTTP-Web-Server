@@ -43,7 +43,7 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
         handler.reset(http::server::StatusHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Status Handler called";
     } else {
-        handler.reset(http::server::DefaultHandler::create(config, root_path));
+        handler.reset(http::server::ErrorHandler::create(config, root_path));
     }
     return handler;
 } 
