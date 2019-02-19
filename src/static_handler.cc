@@ -61,7 +61,7 @@ std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const requ
 		return response_;
 	}
 
-	// Determine the file extension.
+	// Determine the file extension. (txt, jpg, html....)
 	std::size_t last_slash_pos = request_path.find_last_of("/");
 	std::size_t last_dot_pos = request_path.find_last_of(".");
 	std::string extension;
@@ -90,6 +90,9 @@ std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const requ
 	}
 	response_->AddHeader("Content-Length", std::to_string(fileContent.size()));
 	response_->AddHeader("Content-type", mime_types::extension_to_type(extension));
+	if(fileContent.empty()) {
+		response_->SetStatus(http::server::Response::no_content);
+	}
 	response_->SetContent(fileContent);
 	return response_;
 }
