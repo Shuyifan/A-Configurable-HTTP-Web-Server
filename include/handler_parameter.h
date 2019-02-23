@@ -1,5 +1,4 @@
-#ifndef HANDLER_PARAMETER_H
-#define HANDLER_PARAMETER_H
+#pragma once
 #include <string>
 #include "config_parser.h"
 
@@ -24,4 +23,3 @@ struct handler_factory_parameter {
 
 } // namespace server
 } // namespace http
-#endif

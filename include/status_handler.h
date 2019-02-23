@@ -1,5 +1,4 @@
-#ifndef STATUS_HANDLER_H
-#define STATUS_HANDLER_H
+#pragma once
 #include <iostream>
 #include <vector>
 #include <string>
@@ -26,4 +25,3 @@ private:
 } // namespace http
 
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef HANDLER_MANAGER_H
-#define HANDLER_MANAGER_H
+#pragma once
 #include <memory>
 #include <string>
 #include <map>
@@ -81,4 +80,3 @@ private:
 
 }
 }
-#endif

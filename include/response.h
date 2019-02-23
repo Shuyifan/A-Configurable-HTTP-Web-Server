@@ -1,5 +1,4 @@
-#ifndef HTTP_RESPONSE_H
-#define HTTP_RESPONSE_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -69,4 +68,3 @@ public:
 } // namespace server
 } // namespace http
 
-#endif

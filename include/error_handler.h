@@ -1,5 +1,4 @@
-#ifndef ERROR_HANDLER_H
-#define ERROR_HANDLER_H
+#pragma once
 #include "request_handler.h"
 
 namespace http {
@@ -15,4 +14,3 @@ public:
 } // namespace server
 } // namespace http
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef REQUEST_HANDLER_H
-#define REQUEST_HANDLER_H
+#pragma once
 #include <string>
 #include <map>
 #include <string>
@@ -26,4 +25,3 @@ public:
 };
 }
 }
-#endif

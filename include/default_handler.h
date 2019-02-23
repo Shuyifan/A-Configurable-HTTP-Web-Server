@@ -1,5 +1,4 @@
-#ifndef DEFAULT_HANDLER_H
-#define DEFAULT_HANDLER_H
+#pragma once
 #include "request_handler.h"
 #include "request.h"
 #include "header.h"
@@ -28,4 +27,3 @@ public:
 }
 }
 
-#endif

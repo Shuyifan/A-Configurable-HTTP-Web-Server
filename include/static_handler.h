@@ -1,5 +1,4 @@
-#ifndef STATIC_HANDLER_H
-#define STATIC_HANDLER_H
+#pragma once
 #include <map>
 #include "request_handler.h"
 #include "request.h"
@@ -29,5 +28,3 @@ private:
 };
 }
 }
-
-#endif
