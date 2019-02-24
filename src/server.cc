@@ -1,14 +1,14 @@
-
+#include <vector>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/signal_set.hpp>
-
 #include <boost/log/trivial.hpp>
 #include <boost/log/sinks.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/thread.hpp>
 
 #include "server.h"
 #include "session.h"
@@ -20,6 +20,8 @@ server::server(const NginxConfig& config)
     : io_service_(), handlerManager_(config),
 	acceptor_(io_service_) {
     
+	thread_pool_size_ = thread_pool_size_ * sysconf(_SC_NPROCESSORS_ONLN) + 2;
+
 	for(const auto& statement : config.statements_) {
 		const std::vector<std::string> tokens = statement->tokens_;
 		if(tokens[0] == "listen") {
@@ -62,7 +64,20 @@ void server::run() {
 							       this,
 								   boost::asio::placeholders::error,
 								   SIGINT));
-	io_service_.run();
+	//io_service_.run();
+
+  	std::vector<boost::shared_ptr<boost::thread>> threads;
+  	for (std::size_t i = 0; i < thread_pool_size_; i ++)
+  	{
+    	boost::shared_ptr<boost::thread> thread(new boost::thread(boost::bind(&boost::asio::io_service::run, 
+																			  &io_service_)));
+    	threads.push_back(thread);
+  	}
+
+  	// Wait for all threads in the pool to exit.
+  	for (std::size_t i = 0; i < threads.size(); i ++) {
+		threads[i]->join();
+	}
 }
 
 void server::handle_accept(session *new_session, const boost::system::error_code &error) {

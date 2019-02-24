@@ -72,4 +72,7 @@ private:
 
     // The handlerManager
     http::server::HandlerManager handlerManager_;
+
+    // The number of core of the server
+    int thread_pool_size_;
 };
