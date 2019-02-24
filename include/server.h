@@ -29,6 +29,11 @@ public:
     the information about the server
     */
     void run();
+    
+    /**
+    Stop the server.
+    */
+   void stop();
 
 private:
     

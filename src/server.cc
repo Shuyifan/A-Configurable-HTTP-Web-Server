@@ -80,6 +80,10 @@ void server::run() {
 	}
 }
 
+void server::stop() {
+	io_service_.stop();
+}
+
 void server::handle_accept(session *new_session, const boost::system::error_code &error) {
 	if(!acceptor_.is_open()) {
 		return;
