@@ -31,9 +31,6 @@ server::server(const NginxConfig& config)
 					fprintf(stderr, "Error: Invalid port input");
 					exit(1);
 				}
-			} else {
-				fprintf(stderr, "Error: Invalid port input");
-				exit(1);
 			}
 		}
 	}
@@ -60,12 +57,8 @@ void server::run() {
 	BOOST_LOG_TRIVIAL(info) << "Successfully parse config file";
 	BOOST_LOG_TRIVIAL(info) << "Server starts";
 	boost::asio::signal_set signals(io_service_, SIGINT);
-	signals.async_wait(boost::bind(&server::handler,
-							       this,
-								   boost::asio::placeholders::error,
-								   SIGINT));
-	//io_service_.run();
-
+	signals.async_wait(boost::bind(&server::stop, this));
+	
   	std::vector<boost::shared_ptr<boost::thread>> threads;
   	for (std::size_t i = 0; i < thread_pool_size_; i ++)
   	{
@@ -81,6 +74,7 @@ void server::run() {
 }
 
 void server::stop() {
+	BOOST_LOG_TRIVIAL(info) << "Server shut down";
 	io_service_.stop();
 }
 
@@ -95,11 +89,6 @@ void server::handle_accept(session *new_session, const boost::system::error_code
 		delete new_session;
 	}
 	start_accept();
-}
-
-void server::handler(const boost::system::error_code& error, int signal_number) {
-    BOOST_LOG_TRIVIAL(info) << "Server shut down";
-    exit(1);
 }
 
 void server::initLogging() {
