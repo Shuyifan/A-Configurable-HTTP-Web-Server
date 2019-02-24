@@ -20,7 +20,7 @@ server::server(const NginxConfig& config)
     : io_service_(), handlerManager_(config),
 	acceptor_(io_service_) {
     
-	thread_pool_size_ = thread_pool_size_ * sysconf(_SC_NPROCESSORS_ONLN) + 2;
+	thread_pool_size_ = 2 * sysconf(_SC_NPROCESSORS_ONLN) + 2;
 
 	for(const auto& statement : config.statements_) {
 		const std::vector<std::string> tokens = statement->tokens_;
