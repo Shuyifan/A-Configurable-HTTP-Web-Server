@@ -26,6 +26,7 @@ enable_testing()
 include(GoogleTest)
 add_subdirectory(/usr/src/googletest googletest)
 
+
 # Enable Boost
 # Use static libraries so binaries can be deployed without a full boost install
 set(Boost_USE_STATIC_LIBS ON)
@@ -48,11 +49,11 @@ target_link_libraries(server server_lib Boost::system Boost::log_setup Boost::lo
 add_executable(test_all tests/config_parser_test.cc tests/session_test.cc 
                         tests/request_parser_test.cc tests/server_test.cc tests/echo_handler_test.cc tests/static_handler_test.cc
                         tests/mime_types_test.cc tests/utils_test.cc tests/default_handler_test.cc tests/response_test.cc
-                        tests/handler_manager_test.cc tests/error_handler_test.cc)
+                        tests/handler_manager_test.cc tests/error_handler_test.cc tests/gmock_server_test.cc)
 #add_executable(config_parser_test tests/config_parser_test.cc)
 #add_executable(session_test tests/session_test.cc)
 #add_executable(request_parser_test tests/request_parser_test.cc)
-target_link_libraries(test_all server_lib gtest_main Boost::system Boost::log_setup Boost::log Boost::signals)
+target_link_libraries(test_all server_lib gtest_main Boost::system Boost::log_setup Boost::log Boost::signals gmock)
 #target_link_libraries(config_parser_test server_lib gtest_main)
 #target_link_libraries(session_test server_lib gtest_main Boost::system)
 #target_link_libraries(request_parser_test server_lib gtest_main Boost::system)
