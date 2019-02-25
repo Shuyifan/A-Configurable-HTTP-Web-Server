@@ -14,10 +14,6 @@ public:
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 
-	/// Perform URL-decoding on a string. Returns false if the encoding was
-	/// invalid.
-	static bool url_decode(const std::string& in, std::string& out);
-
 	virtual std::unique_ptr<http::server::Response> HandlerRequest(const request& request) override;
 
 	void setParameter(std::string url, http::server::handler_parameter param);

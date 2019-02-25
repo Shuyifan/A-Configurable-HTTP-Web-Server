@@ -34,6 +34,12 @@ TEST_F(HandlerManagerTest, createByNameTest) {
 	temp_ptr = handler_manager.createByName("static", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::StaticHandler::create(emptyConfig, ""))));
 
+	temp_ptr = handler_manager.createByName("default", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::DefaultHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("status", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::StatusHandler::create(emptyConfig, ""))));
+
 	temp_ptr = handler_manager.createByName("error", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
 
@@ -50,6 +56,12 @@ TEST_F(HandlerManagerTest, createByUrlTest) {
 	
 	temp_ptr = handler_manager.createByUrl("/echo");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::EchoHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByUrl("/status");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::StatusHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByUrl("/default");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::DefaultHandler::create(emptyConfig, ""))));
 
 	temp_ptr = handler_manager.createByUrl("/foo");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::StaticHandler::create(emptyConfig, ""))));

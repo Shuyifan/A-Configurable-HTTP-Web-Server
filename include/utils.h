@@ -25,3 +25,8 @@ The str or the file does not exist, return an empty string.
 @return the name of the file
 */
 std::string get_file_name(std::string str);
+
+/**
+Perform URL-decoding on a string. Returns false if the encoding was invalid.
+*/
+bool url_decode(const std::string& in, std::string& out);
