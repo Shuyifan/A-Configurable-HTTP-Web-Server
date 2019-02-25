@@ -43,7 +43,7 @@ public:
     StatusCode GetStatus(){
         return status_code_;
     }
-        
+
     void AddHeader(const std::string& name, const std::string& value) {
         headers[name] = value;
     }
@@ -54,6 +54,12 @@ public:
     void SetVersion(const std::string& version) {
         version_ = version;
     }
+
+    void SetIntStatus(int code) {
+        status_code_int_ = code; // temporary for now before lookup table is added
+    }
+
+    StatusCode StatusLookup(int code);
 
     std::string ToString();
 
@@ -66,8 +72,11 @@ public:
         StatusCode status_code_;
         std::string resString(StatusCode status);
         std::string version_;
-    
+
+        // alternate versions of variables for ProxyHandler
+        std::vector<header> header_vec;
+        int status_code_int_;
+
 };
 } // namespace server
 } // namespace http
-

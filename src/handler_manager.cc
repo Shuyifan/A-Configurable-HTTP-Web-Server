@@ -26,8 +26,8 @@ HandlerManager::HandlerManager(const NginxConfig& config) {
 	}
 }
 
-std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const std::string& name, 
-									 					                   const NginxConfig& config, 
+std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const std::string& name,
+									 					                   const NginxConfig& config,
                                      					                   const std::string& root_path) {
     std::unique_ptr<http::server::RequestHandler> handler;
     if(name == "static") {
@@ -60,7 +60,7 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
 
     
     return handler;
-} 
+}
 
 std::unique_ptr<http::server::RequestHandler> HandlerManager::createByUrl(const std::string& url) {
     std::string upper_dir = url;
@@ -72,7 +72,7 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByUrl(const 
     } else {
         return createByName("default", param.begin()->second.config, base_dir);
     }
-} 
+}
 
 std::string HandlerManager::getLocation(std::unique_ptr<NginxConfig>& inner_config) {
     for(const auto& statement : inner_config->statements_) {

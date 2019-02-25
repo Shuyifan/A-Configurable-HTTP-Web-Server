@@ -9,6 +9,7 @@
 #include "default_handler.h"
 #include "error_handler.h"
 #include "status_handler.h"
+//#include "proxy_handler.h"
 #include "create_form_handler.h"
 #include "accept_handler.h"
 #include "config_parser.h"
@@ -25,7 +26,7 @@ public:
 	then map the url to handler_factory_parameter
 
     @param NginxConfig file
-    @return 
+    @return
     */
 	HandlerManager(const NginxConfig& config);
 	/**
@@ -34,8 +35,8 @@ public:
     @param string name represent what type of handler it is
     @return unique_ptr RequestHandler
     */
-	std::unique_ptr<http::server::RequestHandler> createByName(const std::string& name, 
-									 						   const NginxConfig& config, 
+	std::unique_ptr<http::server::RequestHandler> createByName(const std::string& name,
+									 						   const NginxConfig& config,
                                      						   const std::string& root_path);
 	/**
     Get the handler name of url by using param map and then call createByName
@@ -63,7 +64,7 @@ public:
 
 private:
 	/**
-    Get the location of current file 
+    Get the location of current file
 
     @param string inner_config of config file
     @return string of current location parameter
