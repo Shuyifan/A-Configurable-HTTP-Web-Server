@@ -4,6 +4,46 @@
 namespace http {
 namespace server {
 
+
+    Response::StatusCode Response::getStatusCode(int status_code) {
+        switch (status_code) {
+            case 200:
+                return ok;
+            case 201:
+                return created;
+            case 202:
+                return accepted;
+            case  204:
+                return no_content;
+            case  300:
+                return multiple_choices;
+            case  301:
+                return moved_permanently;
+            case  302:
+                return moved_temporarily;
+            case  304:
+                return not_modified;
+            case  400:
+                return bad_request;
+            case  401:
+                return unauthorized;
+            case  403:
+                return forbidden;
+            case  404:
+                return not_found;
+            case  500:
+                return internal_server_error;
+            case  501:
+                return not_implemented;
+            case  502:
+                return bad_gateway;
+            case  503:
+                return service_unavailable;
+            default:
+                return bad_request;
+        }
+    }
+
     std::string Response::resString(StatusCode status) {
         switch (status) {
 

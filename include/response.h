@@ -33,6 +33,9 @@ public:
     Response() {
         version_ = "1.1";
     }
+
+    StatusCode getStatusCode(int status_code);
+
     void SetStatus(const StatusCode status_code) {
         status_code_ = status_code;
     }
