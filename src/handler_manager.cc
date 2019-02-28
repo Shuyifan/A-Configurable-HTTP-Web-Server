@@ -42,6 +42,9 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "status") {
         handler.reset(http::server::StatusHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Status Handler called";
+    } else if(name == "createForm") {
+        handler.reset(http::server::CreateFormHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "CreateForm Handler called";
     } else if(name == "default") {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Default Handler called";
