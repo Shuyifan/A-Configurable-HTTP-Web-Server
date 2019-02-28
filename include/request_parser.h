@@ -42,14 +42,26 @@ public:
     {
       result_type result = consume(req, *begin++);
       if (result == good || result == bad)
+      {
+        if (result == good)
+        {
+          while (begin != end)
+          {
+            getContent(req, *begin++);
+          }
+        }
         return result;
-        //return std::make_tuple(result, begin);
+      } 
+      //return std::make_tuple(result, begin);
     }
     return indeterminate;
     //return std::make_tuple(indeterminate, begin);
   }
 
 private:
+  /// Get the request message-body
+  void getContent(request& req, char input);
+
   /// Handle the next character of input.
   result_type consume(request& req, char input);
 
