@@ -45,6 +45,9 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "createForm") {
         handler.reset(http::server::CreateFormHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "CreateForm Handler called";
+    } else if(name == "listMeme") {
+        handler.reset(http::server::ListMemeHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
     } else if(name == "accept") {
         handler.reset(http::server::AcceptHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Accept Handler called";
@@ -54,6 +57,8 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else {
         handler.reset(http::server::ErrorHandler::create(config, root_path));
     }
+
+    
     return handler;
 } 
 
