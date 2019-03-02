@@ -3,10 +3,11 @@
 # $? means exit status
 # $! means current process id
 
-PATH_FOR_SERVER="../build/bin/server test.conf"
+PATH_FOR_SERVER="../build/bin/server"
 if [ ! -d "../build" ]; then
-    PATH_FOR_SERVER="../build_coverage/bin/server test.conf"
+    PATH_FOR_SERVER="../build_coverage/bin/server"
 fi
+PATH_TO_CONFIG="test.conf"
 PATH_TO_ECHO_OUTPUT="echo/echo_output"
 PATH_TO_ECHO_EXPECTED="echo/echo_output_expected"
 PATH_TO_ERROR_OUTPUT="error/error_output"
@@ -19,9 +20,10 @@ PATH_TO_STATIC_EXPECT_JPG="static/expect/test.jpg"
 PATH_TO_STATIC_OUT_JPG="static/current/test.jpg"
 PATH_TO_STATIC_EXPECT_HTML="static/expect/index.html"
 PATH_TO_STATIC_OUT_HTML="static/current/index.html"
+PATH_TO_PROXY_OUT="proxy/proxy_output"
 FLAG=0 
 PORT=12345
-timeout 100  $PATH_FOR_SERVER  & > /dev/null 2> /dev/null
+timeout 100  $PATH_FOR_SERVER $PATH_TO_CONFIG  & > /dev/null 2> /dev/null
 PID=$!
 
 # Here -X specify the port I am using
@@ -97,6 +99,32 @@ else
     FLAG=$((FLAG+1))
     echo "Fail"
 fi
+
+#check proxy handler
+
+#first start another instance of the server
+SECOND_PORT=12346
+PATH_TO_SECOND_CONFIG="proxy_test.conf"
+timeout 100  $PATH_FOR_SERVER $PATH_TO_SECOND_CONFIG  & > /dev/null 2> /dev/null
+SECOND_PID=$!
+
+#now issue a static file request for the proxied server
+echo "TODO -- delete dummy curl statement"
+curl -i http://localhost:$PORT/proxy/static/test.txt
+curl -sS http://localhost:$PORT/proxy/static/test.txt > $PATH_TO_PROXY_OUT
+cmp -n 20 -s $PATH_TO_PROXY_OUT $PATH_TO_STATIC_EXPECT
+current=$?
+if [ $current -eq 0 ]
+then
+    echo "Success"
+else
+    FLAG=$((FLAG+1))
+    echo "Fail"
+fi
+
+#cleanup second server
+kill $SECOND_PID
+
 
 
 #check if the html pages for static works

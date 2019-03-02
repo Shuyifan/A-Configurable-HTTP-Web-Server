@@ -9,7 +9,7 @@
 #include "default_handler.h"
 #include "error_handler.h"
 #include "status_handler.h"
-//#include "proxy_handler.h"
+#include "proxy_handler.h"
 #include "create_form_handler.h"
 #include "accept_handler.h"
 #include "config_parser.h"
