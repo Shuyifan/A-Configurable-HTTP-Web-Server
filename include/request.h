@@ -42,7 +42,6 @@ struct request
     request.append(std::to_string(http_version_major));
     request.append(".");
     request.append(std::to_string(http_version_minor));
-    request.append(" ");
     request.append("\r\n");
     for(header hd : headers) {
         request.append(hd.name);

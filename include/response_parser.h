@@ -76,6 +76,9 @@ private:
 	state consume(Response &response, char input);
 	std::vector<header> temp_headers_;
 	void convert_vector_to_map(Response& response);
+
+    int temp_status_code;
+    std::string temp_version;
 };
 
 } // namespace server

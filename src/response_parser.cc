@@ -16,6 +16,8 @@ namespace server {
 
 ResponseParser::ResponseParser() : state_(http_version_h)
 {
+	temp_status_code = 0;
+	temp_version = "";
 }
 
 void ResponseParser::reset() {
@@ -24,9 +26,6 @@ void ResponseParser::reset() {
 
 ResponseParser::state ResponseParser::consume(Response& response, char input)
 {
-	int temp_status_code;
-	std::string temp_version;
-
 	switch (state_) {
 	case http_version_h:
 		if (input == 'H')
@@ -97,7 +96,6 @@ ResponseParser::state ResponseParser::consume(Response& response, char input)
 		if (is_digit(input)) {
 			temp_status_code = temp_status_code * 10 + input - '0';
 			response.SetStatus(response.getStatusCode(temp_status_code));
-			//response.SetIntStatus(temp_status_code);
 			return status_code_space;
 		}
 		return bad;

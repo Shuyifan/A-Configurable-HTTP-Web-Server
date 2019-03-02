@@ -28,6 +28,7 @@ Client::Client()
 
 std::unique_ptr<http::server::Client> Client::create(const std::string& address, const int& port)
 {
+    BOOST_LOG_TRIVIAL(info) << "Setting up client.  Address:  " << address << "; Port: " << port;
     std::unique_ptr<http::server::Client> client (new Client());
     client->address_ = address;
     client->port_ = port;
@@ -37,6 +38,7 @@ std::unique_ptr<http::server::Client> Client::create(const std::string& address,
 
 std::unique_ptr<http::server::Response> Client::getResponse(request& request)
 {
+    BOOST_LOG_TRIVIAL(trace) << "Starting client";
     start();
     BOOST_LOG_TRIVIAL(info) << "Opened connection. Writing request to remote server..";
     bool write_successful = write_request(request.rawString());
@@ -47,15 +49,14 @@ std::unique_ptr<http::server::Response> Client::getResponse(request& request)
         BOOST_LOG_TRIVIAL(info) << "Response string has been received. About to parse into Resposne object..";
 
         std::unique_ptr<http::server::Response> response (new http::server::Response());
-        
-        response_parser_.parse(*response,
-                            response_string);
+        response_parser_.parse(*response, response_string);
 
         remote_socket_.close();
         if(response_parser_.is_good())
         {
             BOOST_LOG_TRIVIAL(info) << "Successfully parsed response.";
             BOOST_LOG_TRIVIAL(info) << response_string;
+            BOOST_LOG_TRIVIAL(trace) << "Parsed response tostring:\n" << response->ToString();
             return response;
         } else {
             BOOST_LOG_TRIVIAL(error) << "Invalid response.";
@@ -69,17 +70,79 @@ std::unique_ptr<http::server::Response> Client::getResponse(request& request)
     }
 }
 
+bool Client::splitAddress(const std::string& address, std::string& hostnameOut, std::string& portOut, size_t startPos) {
+    // Returns true unless there's an error
+    
+    // Remove an initial http://
+    std::size_t colonDoubleSlashPos = address.find("://", startPos);
+    if (colonDoubleSlashPos != std::string::npos ) {
+        std::string pre = address.substr(0, colonDoubleSlashPos);
+        if (pre != "http") 
+            BOOST_LOG_TRIVIAL(warning) << "Address of proxy server begins with '*://' but not 'http://' -- " << pre << ":// -- implicitly pretending it began with http";
+        return splitAddress(address.substr(colonDoubleSlashPos+3), hostnameOut, portOut, startPos);
+    }
+    
+    // portOut defaults to 80
+    portOut = "80";
+
+    std::size_t colonPos = address.find(':', startPos);
+    if (colonPos == std::string::npos) {
+        hostnameOut = address;
+        return true;
+    }
+    // exclude the case where the colon precedes a slash
+    if (colonPos < address.size()-1 && address[colonPos+1] == '/')
+        return splitAddress(address, hostnameOut, portOut, colonPos+1);
+    // if the colon is the last character, ignore it
+    if (colonPos == address.size()-1)
+        return false;
+
+    if (colonPos < address.size()) {
+        hostnameOut = address.substr(0, colonPos);
+        std::string portTemp = address.substr(colonPos+1); 
+
+        // ensure port out doesn't have any trailing slashes
+        while (portTemp.size()>0 && portTemp.back()=='/')
+            portTemp.pop_back();
+
+        // make sure port contains only digits
+        for ( const char c: portTemp )
+            if ( c<'0' || c>'9' ) {
+                return false;
+            }
+
+        portOut = portTemp;
+        return true;
+    }
+
+    // shouldn't get to this point
+    return false;
+}
+
 void Client::start()
 {
     // connect to remote server, start reading
-    tcp::endpoint endp = tcp::endpoint(boost::asio::ip::address::from_string(address_),
-                                        port_);
+    BOOST_LOG_TRIVIAL(trace) << "creating tcp endpoint";
+    
+    // (endpoint resolving adapted from https://stackoverflow.com/a/31314678/6798063)
+    tcp::resolver resolver(io_service_);
+    std::string hostname, serverport;
+    bool success = splitAddress(address_, hostname, serverport);
+
+    BOOST_LOG_TRIVIAL(trace) << "Attempting to resolve tcp endpoint; Host: " << hostname << "; server port: " << serverport;
+    tcp::resolver::query query(hostname, serverport);
+    tcp::resolver::iterator iter = resolver.resolve(query);
+    tcp::endpoint endp = iter->endpoint();
+
+    BOOST_LOG_TRIVIAL(trace) << "connecting socket to endpoint";
     remote_socket_.connect(endp);
     BOOST_LOG_TRIVIAL(info) << "Opened connection with (host) " << address_ << " on port " << port_;
 }
 
 bool Client::write_request(std::string request_string)
 {
+    BOOST_LOG_TRIVIAL(trace) << "Writing the following request to server:\n" << request_string;
+
     boost::system::error_code error;
     remote_socket_.send(boost::asio::buffer(request_string),
                         {},

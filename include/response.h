@@ -44,6 +44,10 @@ public:
         return status_code_;
     }
 
+    std::string GetVersion(){
+        return version_;
+    }
+
     void AddHeader(const std::string& name, const std::string& value) {
         headers[name] = value;
     }
@@ -64,6 +68,10 @@ public:
     std::string ToString();
 
     std::string getStatusLine();
+
+    bool headerExists(std::string headerKey);
+    std::string getHeader(std::string headerKey);
+    StatusCode getStatus() const;
 
     private:
         std::string mime_type_;

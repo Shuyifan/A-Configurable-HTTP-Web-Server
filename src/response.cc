@@ -1,6 +1,7 @@
 #include "response.h"
 #include <iostream>
 #include <sstream>
+#include <boost/log/trivial.hpp>
 namespace http {
 namespace server {
 
@@ -40,6 +41,7 @@ namespace server {
             case  503:
                 return service_unavailable;
             default:
+                BOOST_LOG_TRIVIAL(warning) << "Status code " << status_code << " not recognized.  Setting to 'bad_request'";
                 return bad_request;
         }
     }
@@ -101,6 +103,20 @@ namespace server {
         statusLine << "HTTP/" << version_ << " " << resString(status_code_);
         return statusLine.str();
     }
+bool Response::headerExists(std::string headerKey) {
+    return (headers.count(headerKey) > 0);
+}
+
+std::string Response::getHeader(std::string headerKey) {
+    // If key doesn't exist, return the empty string
+    if ( !headerExists(headerKey) )
+        return "";
+    return headers.find(headerKey)->second;
+}
+
+Response::StatusCode Response::getStatus() const {
+    return status_code_;
+}
     
 } // namespace server
 } // namespace http

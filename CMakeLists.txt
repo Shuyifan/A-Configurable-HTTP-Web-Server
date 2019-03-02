@@ -51,7 +51,7 @@ add_executable(test_all tests/config_parser_test.cc tests/session_test.cc
                         tests/request_parser_test.cc tests/server_test.cc tests/echo_handler_test.cc tests/static_handler_test.cc
                         tests/mime_types_test.cc tests/utils_test.cc tests/default_handler_test.cc tests/response_test.cc
                         tests/handler_manager_test.cc tests/error_handler_test.cc tests/gmock_server_test.cc
-                        tests/response_parser_test.cc)
+                        tests/response_parser_test.cc tests/client_test.cc)
 #add_executable(config_parser_test tests/config_parser_test.cc)
 #add_executable(session_test tests/session_test.cc)
 #add_executable(request_parser_test tests/request_parser_test.cc)

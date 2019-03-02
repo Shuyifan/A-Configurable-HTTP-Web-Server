@@ -14,10 +14,10 @@ class Client {
 
 public:
     Client();
-    std::unique_ptr<http::server::Client> create(const std::string& address, const int& port);
+    static std::unique_ptr<http::server::Client> create(const std::string& address, const int& port);
     std::unique_ptr<http::server::Response> getResponse(request& request);
 
-private:
+protected:
     std::string address_;
     int port_;
 
@@ -30,6 +30,8 @@ private:
     void start();
     bool write_request(std::string request_string);
     std::string read_response();
+
+    static bool splitAddress(const std::string& address, std::string& hostnameOut, std::string& portOut, size_t startPos=0);
 
 }; // class client
 } // namespace server
