@@ -17,11 +17,21 @@ namespace server {
     }
 
     std::unique_ptr<Response> AcceptHandler::HandlerRequest(const request& request) {
-        saveToFile(request.body);
+        int id;
+        if(!boost::filesystem::exists("../files/id")) {
+            id = 1;
+        } else {
+            std::ifstream is("../files/id");
+            is >> id;
+            is.close();
+        }
+
+        saveToFile(request.body, id);
+
         std::unique_ptr<Response> response_ (new Response);
         response_->SetVersion("1.1");
 
-        std::string content = generateHTML();
+        std::string content = generateHTML(id);
         response_->AddHeader("Content-Length", std::to_string(content.size()));
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
         if(content.empty()) {
@@ -31,15 +41,7 @@ namespace server {
         return response_;
     }
 
-    std::string AcceptHandler::generateHTML() {
-        int id;
-        if(!boost::filesystem::exists("../files/id")) {
-            id = 1;
-        } else {
-            std::ifstream is("../files/id");
-            is >> id;
-            is.close();
-        }
+    std::string AcceptHandler::generateHTML(int id) {
         std::stringstream ss;
         ss << "<!DOCTYPE html>";
         ss << "<html lang=\"en\" dir=\"ltr\">";
@@ -98,7 +100,7 @@ namespace server {
         rawInput.swap(buffer);
     }
 
-    void AcceptHandler::saveToFile(const std::string body) {
+    void AcceptHandler::saveToFile(const std::string body, int id) {
         boost::filesystem::path dir("../files/userMemes");
         if(!(boost::filesystem::exists(dir))) {
             bool success = boost::filesystem::create_directory(dir);
@@ -107,7 +109,9 @@ namespace server {
                 return;
             }
         }
-        std::ofstream os("../files/userMemes/test");
+        std::string toFile = "../files/userMemes/meme" + std::to_string(id);
+        std::ofstream os(toFile);
+        os << "id " << id << ";\n";
 
         std::vector<std::string> fields = {"image", "top", "bottom"};
         std::vector<int> positions;

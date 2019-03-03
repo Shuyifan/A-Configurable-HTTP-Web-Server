@@ -16,9 +16,9 @@ public:
     void setFile(std::string file);
 
 private:
-    std::string generateHTML();
+    std::string generateHTML(int id);
     void sanitizeInput(std::string& rawInput);
-    void saveToFile(const std::string data);
+    void saveToFile(const std::string data, int id);
 };
 }
 }
