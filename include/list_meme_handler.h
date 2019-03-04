@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "request_handler.h"
 #include "request.h"
 #include "header.h"
@@ -18,7 +20,9 @@ public:
     
 
 private:
-    std::string file_;
+    std::string root_;
+
+	std::string generateHTML(std::vector<std::string>& file_name);
 };
 }
 }
