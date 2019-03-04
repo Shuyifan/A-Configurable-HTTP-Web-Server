@@ -1,4 +1,6 @@
+#pragma once
 #include <string>
+#include <vector>
 
 /**
 Given a path, output the upper level path (e.g. "/static/sata" -> "/static"),
@@ -30,3 +32,5 @@ std::string get_file_name(std::string str);
 Perform URL-decoding on a string. Returns false if the encoding was invalid.
 */
 bool url_decode(const std::string& in, std::string& out);
+
+void find_files_in_folder(std::string path, std::vector<std::string>& file_name);

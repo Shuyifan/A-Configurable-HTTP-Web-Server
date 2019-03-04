@@ -72,6 +72,11 @@ namespace server {
         }
 
         std::stringstream ss;
+        std::string decoded_top;
+        std::string decoded_bottom;
+        url_decode(top, decoded_top);
+        url_decode(bottom, decoded_bottom);
+
         ss << "<!DOCTYPE html>";
         ss << "<html lang=\"en\" dir=\"ltr\">";
         ss << "<head>";
@@ -87,9 +92,8 @@ namespace server {
         ss << "</head>";
         ss << "<body>";
         ss << "<div>";
-        //ss << "<img src=\"../files/images/" << imageName << "\" alt=\"" << imageName << "\">";
-        ss << "<span id=\"top\">" << top << "</span>";
-        ss << "<span id=\"bottom\">" << bottom << "</span>";
+        ss << "<span id=\"top\">" << decoded_top << "</span>";
+        ss << "<span id=\"bottom\">" << decoded_bottom << "</span>";
         ss << "</div>";
         ss << "</body>";
         ss << "</html>";

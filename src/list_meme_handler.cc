@@ -23,16 +23,8 @@ namespace server {
     }
 
     std::unique_ptr<http::server::Response> ListMemeHandler::HandlerRequest(const request& request) {
-        boost::filesystem::path dir(get_server_dir() + root_);
         std::vector<std::string> file_name;
-
-        if(boost::filesystem::exists(dir)) {
-            boost::filesystem::directory_iterator itEnd;
-            boost::filesystem::directory_iterator itDir(dir);
-            for(; itDir != itEnd; itDir++) {
-                file_name.push_back(itDir->path().string());
-            }
-        }
+        find_files_in_folder(get_server_dir() + root_, file_name);
 
         std::unique_ptr<Response> response_ (new Response);
         response_->SetVersion("1.1");
@@ -78,10 +70,12 @@ namespace server {
             ss << "<tr>";
             for(const auto& statement : config.statements_) {
                 const std::vector<std::string> tokens = statement->tokens_;
+                std::string decoded_text;
+                url_decode(tokens[1], decoded_text);
                 if(tokens[0] == "id") {
-                    ss << "<th scope=\"row\">" << tokens[1] << "</th>";
+                    ss << "<th scope=\"row\">" << decoded_text << "</th>";
                 } else {
-                    ss << "<td>" << tokens[1] << "</td>";
+                    ss << "<td>" << decoded_text << "</td>";
                 }
             }
             ss << "</tr>";

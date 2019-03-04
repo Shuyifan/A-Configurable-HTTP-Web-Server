@@ -3,8 +3,9 @@
 #include <sstream>
 #include <fstream>
 
+#include "utils.h"
 #include "stdlib.h"
-
+#include <boost/filesystem.hpp>
 
 std::string get_upper_dir(std::string str) {
     if(str.length() == 0) {
@@ -55,4 +56,15 @@ bool url_decode(const std::string& in, std::string& out) {
 		}
 	}
   	return true;
+}
+
+void find_files_in_folder(std::string path, std::vector<std::string>& file_name) {
+	boost::filesystem::path dir(path);
+	if(boost::filesystem::exists(dir)) {
+	    boost::filesystem::directory_iterator itEnd;
+	    boost::filesystem::directory_iterator itDir(dir);
+	    for(; itDir != itEnd; itDir++) {
+	        file_name.push_back(itDir->path().string());
+	    }
+	}
 }
