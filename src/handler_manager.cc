@@ -48,12 +48,15 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "createForm") {
         handler.reset(http::server::CreateFormHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "CreateForm Handler called";
-    } else if(name == "listMeme") {
-        handler.reset(http::server::ListMemeHandler::create(config, root_path));
-        BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
     } else if(name == "accept") {
         handler.reset(http::server::AcceptHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Accept Handler called";
+    } else if(name == "viewMeme") {
+        handler.reset(http::server::ViewMemeHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "ViewMeme Handler called";
+    } else if(name == "listMeme") {
+        handler.reset(http::server::ListMemeHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
     } else if(name == "default") {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Default Handler called";
@@ -67,6 +70,9 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
 
 std::unique_ptr<http::server::RequestHandler> HandlerManager::createByUrl(const std::string& url) {
     std::string upper_dir = url;
+    if(url.find("?") != url.npos) {
+        upper_dir = url.substr(0, url.find("?"));
+    }
     while(!upper_dir.empty() && param.find(upper_dir) == param.end()) {
         upper_dir = get_upper_dir(upper_dir);
     }

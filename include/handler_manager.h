@@ -11,10 +11,11 @@
 #include "status_handler.h"
 #include "proxy_handler.h"
 #include "create_form_handler.h"
+#include "view_meme_handler.h"
+#include "list_meme_handler.h"
 #include "accept_handler.h"
 #include "config_parser.h"
 #include "handler_parameter.h"
-#include "list_meme_handler.h"
 
 namespace http {
 namespace server {
