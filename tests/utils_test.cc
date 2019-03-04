@@ -27,6 +27,11 @@ TEST_F(UtilsTest, FileNameTest) {
     std::string input = "/files/static/index.html";
     std::string file_name = get_file_name(input);
     EXPECT_EQ(file_name, "/index.html");
+    
+    input = "/files/static/index.html";
+    file_name = get_file_name(input, false);
+    EXPECT_EQ(file_name, "/index");
+    
     input = "index.html";
     file_name = get_file_name(input);
     EXPECT_EQ(file_name, "");

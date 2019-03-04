@@ -16,6 +16,8 @@ public:
 
     void setFile(std::string file);
 
+	std::string generateHTML();
+
 private:
     std::string file_;
 };

@@ -24,11 +24,20 @@ std::string get_server_dir() {
     return file_path;
 }
 
-std::string get_file_name(std::string str) {
+std::string get_file_name(std::string str, bool contain_extension) {
     if(str.rfind("/") == -1) {
         return "";
     } else {
-        return str.substr(str.rfind("/"));
+        if(contain_extension) {
+			return str.substr(str.rfind("/"));
+		} else {
+			std::string file_name = str.substr(str.rfind("/"));
+			if(file_name.rfind(".") == -1) {
+				return file_name;
+			} else {
+				return file_name.substr(0, file_name.rfind("."));
+			}
+		}
     }
 }
 
