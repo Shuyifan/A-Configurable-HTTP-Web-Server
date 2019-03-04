@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 
+#include "config_parser.h"
 #include "utils.h"
 #include "list_meme_handler.h"
 #include <boost/filesystem.hpp>
@@ -54,20 +55,42 @@ namespace server {
         ss << "<html lang=\"en\" dir=\"ltr\">";
         ss << "<head>";
         ss << "<meta charset=\"utf-8\">";
-        ss << "<title>Meme Generator</title>";
+        ss << "<title>Meme List</title>";
         ss << "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">";
         ss << "</head>";
         ss << "<body>";
-        ss << "<table border=\"1\">";
+        ss << "<div class=\"container\">";
+        ss << "<h2>The Meme List</h2>";
+        ss << "<table class=\"table table-striped\">";
+        ss << "<thead>";
         ss << "<tr>";
-        ss << "<th>Month</th>";
-        ss << "<th>Savings</th>";
+        ss << "<th scope=\"col\">ID</th>";
+        ss << "<th scope=\"col\">Image </th>";
+        ss << "<th scope=\"col\">Top Text</th>";
+        ss << "<th scope=\"col\">Bottom Text</th>";
         ss << "</tr>";
-        ss << "<tr>";
-        ss << "<td>January</td>";
-        ss << "<td>$100</td>";
-        ss << "</tr>";
+        ss << "<tbody>";
+        
+        NginxConfigParser config_parser;
+        for(auto const& file: file_name) {
+            NginxConfig config;
+            config_parser.Parse(file.c_str(), &config);
+            ss << "<tr>";
+            for(const auto& statement : config.statements_) {
+                const std::vector<std::string> tokens = statement->tokens_;
+                if(tokens[0] == "id") {
+                    ss << "<th scope=\"row\">" << tokens[1] << "</th>";
+                } else {
+                    ss << "<td>" << tokens[1] << "</td>";
+                }
+            }
+            ss << "</tr>";
+        }
+        
+        ss << "</tbody>";
+        ss << "</thead>";
         ss << "</table>";
+        ss << "</div>";
         ss << "</body>";
         ss << "</html>";
         return ss.str();
