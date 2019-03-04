@@ -126,6 +126,7 @@ namespace server {
             int equalPos = body.find("=", start);
             std::string name = body.substr(start, equalPos - start);
             std::string value = body.substr(equalPos + 1, end - equalPos - 1);
+            sanitizeInput(value);
             os << name << " " << value << ";\n";
         }
     }
