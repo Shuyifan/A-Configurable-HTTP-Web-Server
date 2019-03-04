@@ -26,7 +26,7 @@ COPY conf/* conf/
 COPY files/static/ /usr/src/project/files/static/
 
 # TODO(!): Expose some port(s)
-EXPOSE 80
+EXPOSE 80 12347
 
 # Use ENTRYPOINT to specify the binary name
 # TODO(!): Update with real server name
