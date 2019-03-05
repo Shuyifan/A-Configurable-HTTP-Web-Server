@@ -48,6 +48,10 @@ public:
         return version_;
     }
 
+    std::string getBody() {
+        return content_;
+    }
+
     void AddHeader(const std::string& name, const std::string& value) {
         headers[name] = value;
     }

@@ -51,5 +51,5 @@ TEST_F(UtilsTest, findFilesInFolderTest) {
     std::string path = get_server_dir() + "/tests/utils_test";
     std::vector<std::string> file_names;
     find_files_in_folder(path, file_names);
-    EXPECT_EQ(2, file_names.size());
+    EXPECT_EQ(file_names.size(), 2);
 }
