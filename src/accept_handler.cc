@@ -83,6 +83,7 @@ namespace server {
         ss << "</body>";
         ss << "</html>";
 
+        std::string idFile = rootDir_ + "/id";
         std::ofstream os(idFile);
         id++;
         os << id;
