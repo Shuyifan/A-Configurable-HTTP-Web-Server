@@ -53,7 +53,10 @@ namespace server {
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
         if(content.empty()) {
             response_->SetStatus(Response::no_content);
+        } else {
+            response_->SetStatus(Response::ok);
         }
+        
         response_->SetContent(content);
         return response_;
     }
