@@ -48,6 +48,21 @@ TEST_F(HandlerManagerTest, createByNameTest) {
 
 	temp_ptr = handler_manager.createByName("unknown", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("proxy", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ProxyHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("createForm", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::CreateFormHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("accept", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::AcceptHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("viewMeme", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ViewMemeHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("listMeme", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ListMemeHandler::create(emptyConfig, ""))));
 }
 
 TEST_F(HandlerManagerTest, createByUrlTest) {
@@ -74,4 +89,7 @@ TEST_F(HandlerManagerTest, createByUrlTest) {
 
 	temp_ptr = handler_manager.createByUrl("/foo/test.jpg");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::StaticHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByUrl("/meme/view?id=1");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ViewMemeHandler::create(emptyConfig, ""))));
 }
