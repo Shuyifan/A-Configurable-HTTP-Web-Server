@@ -14,9 +14,10 @@ public:
 	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;
 
     void setDir(std::string dir);
+    int getID(const std::string uri);
+    
 
 private:
-    int getID(const std::string uri);
     std::string generateHTML(int id);
     std::string dir_;
 };
