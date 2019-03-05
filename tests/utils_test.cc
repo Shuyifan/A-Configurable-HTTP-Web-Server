@@ -1,3 +1,6 @@
+#include <vector>
+#include <string>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "utils.h"
@@ -42,4 +45,11 @@ TEST_F(UtilsTest, UrlDecodeTest) {
     std::string out = "";
     EXPECT_TRUE(url_decode(url, out));
     EXPECT_EQ(out, "/files/static/index world 1.html");
+}
+
+TEST_F(UtilsTest, findFilesInFolderTest) {
+    std::string path = get_server_dir() + "/tests/utils_test";
+    std::vector<std::string> file_names;
+    find_files_in_folder(path, file_names);
+    EXPECT_EQ(2, file_names.size());
 }
