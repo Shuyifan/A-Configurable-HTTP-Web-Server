@@ -23,6 +23,8 @@ protected:
     bool isRedirect(Response response);
     static void splitCombinedAddress(const std::string& combinedAddress, std::string& addressOut, std::string& locationOut, size_t startPosition=0);
 
+    virtual std::unique_ptr<Client> createClient(std::string remoteAddress, int outgoingPort);
+
     std::string location_;
 	int port_;
     std::string address_;

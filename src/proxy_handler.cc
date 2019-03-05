@@ -15,7 +15,11 @@ ProxyHandler* ProxyHandler::create(const NginxConfig& config, const std::string&
 {
     BOOST_LOG_TRIVIAL(info) << "Creating proxy handler";
 	http::server::ProxyHandler* handler = new http::server::ProxyHandler();
-    readConfig(config, handler);
+    bool success = readConfig(config, handler);
+    if (!success) {
+        BOOST_LOG_TRIVIAL(error) << "Error in reading proxy handler config; returning null ptr";
+        return nullptr;
+    }
     BOOST_LOG_TRIVIAL(trace) << "Returning created proxy handler";
     return handler;
 }
@@ -36,7 +40,7 @@ std::unique_ptr<http::server::Response> ProxyHandler::HandlerRequest(const reque
         request new_request = setup_new_request(theRequest, new_request_path);
 
         BOOST_LOG_TRIVIAL(trace) << "Setting up the client to the proxy server.  Address: " << new_address << "; Port: " << port_;
-        std::unique_ptr<Client> client = Client::create(new_address, port_);
+        std::unique_ptr<Client> client = createClient(new_address, port_);
         BOOST_LOG_TRIVIAL(trace) << "Getting response from the proxy server";
         response = client->getResponse(new_request);
         BOOST_LOG_TRIVIAL(trace) << "Received response from the proxy server:\n" << response->ToString();
@@ -59,6 +63,9 @@ std::unique_ptr<http::server::Response> ProxyHandler::HandlerRequest(const reque
 
 
 
+std::unique_ptr<Client> ProxyHandler::createClient(std::string remoteAddress, int outgoingPort) {
+    return Client::create(remoteAddress, outgoingPort);
+}
 
 
 std::string ProxyHandler::extract_path_for_remote(std::string original_path_raw)
@@ -185,10 +192,12 @@ bool ProxyHandler::readConfig(const NginxConfig& config, ProxyHandler* handler) 
             handler->prefix_ = tokens[1];
         }
     }
-    // TODO -- log an error when this and other failures occur
     if ( !( location_read && address_read && port_read ) ) {
         // fail -- required config keywords must be passed
-        // TODO -- check this return value in the factory function
+        BOOST_LOG_TRIVIAL(error) << "Proxy handler -- Not all required config options were read:\n"
+            << "\tLocation:  " << ( location_read ? "read" : "not read" ) << "\n"
+            << "\tAddress:  "  << ( address_read  ? "read" : "not read" ) << "\n"
+            << "\tPort:  "     << ( port_read     ? "read" : "not read" );
         return false;
     }
 
@@ -202,11 +211,13 @@ bool ProxyHandler::readConfig(const NginxConfig& config, ProxyHandler* handler) 
     }
     if (!is_valid) {
         // fail -- port must be an integer
+        BOOST_LOG_TRIVIAL(error) << "Proxy handler -- port in config is not an integer";
         return false;
     }
     int port = atoi(portString.c_str());
     if (port <= 0) {
         // fail -- port must be a positive integer
+        BOOST_LOG_TRIVIAL(error) << "Proxy handler -- port in config is no a positive integer";
         return false;
     }
     handler->port_ = port;

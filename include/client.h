@@ -15,7 +15,7 @@ class Client {
 public:
     Client();
     static std::unique_ptr<http::server::Client> create(const std::string& address, const int& port);
-    std::unique_ptr<http::server::Response> getResponse(request& request);
+    virtual std::unique_ptr<http::server::Response> getResponse(request& request);
 
 protected:
     std::string address_;
