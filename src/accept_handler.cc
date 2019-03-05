@@ -13,15 +13,32 @@ namespace server {
     RequestHandler* AcceptHandler::create(const NginxConfig& config, 
 								          const std::string& root_path) {
         AcceptHandler* handler = new AcceptHandler();
+        handler->setRootDir(get_server_dir() + root_path);
+        for(const auto& statement : config.statements_) {
+            const std::vector<std::string> tokens = statement->tokens_;
+            if(tokens[0] == "root") {
+                handler->setDir(get_server_dir() + root_path + "/" + tokens[1]);
+                break;
+            }
+        }
         return handler;
+    }
+
+    void AcceptHandler::setDir(std::string dir) {
+        fileDir_ = dir;
+    }
+
+    void AcceptHandler::setRootDir(std::string dir) {
+        rootDir_ = dir;
     }
 
     std::unique_ptr<Response> AcceptHandler::HandlerRequest(const request& request) {
         int id;
-        if(!boost::filesystem::exists("../files/id")) {
+        std::string idFile = rootDir_ + "/id";
+        if(!boost::filesystem::exists(idFile)) {
             id = 1;
         } else {
-            std::ifstream is("../files/id");
+            std::ifstream is(idFile);
             is >> id;
             is.close();
         }
@@ -66,7 +83,7 @@ namespace server {
         ss << "</body>";
         ss << "</html>";
 
-        std::ofstream os("../files/id");
+        std::ofstream os(idFile);
         id++;
         os << id;
         return ss.str();
@@ -101,7 +118,7 @@ namespace server {
     }
 
     void AcceptHandler::saveToFile(const std::string body, int id) {
-        boost::filesystem::path dir("../files/userMemes");
+        boost::filesystem::path dir(fileDir_);
         if(!(boost::filesystem::exists(dir))) {
             bool success = boost::filesystem::create_directory(dir);
             if(!success) {
@@ -109,7 +126,7 @@ namespace server {
                 return;
             }
         }
-        std::string toFile = "../files/userMemes/meme" + std::to_string(id);
+        std::string toFile = fileDir_ + "/meme" + std::to_string(id);
         std::ofstream os(toFile);
         os << "id " << id << ";\n";
 

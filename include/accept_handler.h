@@ -13,12 +13,15 @@ public:
 
 	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;
 
-    void setFile(std::string file);
+    void setDir(std::string dir);
+    void setRootDir(std::string dir);
 
 private:
     std::string generateHTML(int id);
     void sanitizeInput(std::string& rawInput);
     void saveToFile(const std::string data, int id);
+    std::string fileDir_;
+    std::string rootDir_;
 };
 }
 }
