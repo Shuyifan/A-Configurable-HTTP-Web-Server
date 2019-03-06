@@ -103,20 +103,21 @@ namespace server {
         statusLine << "HTTP/" << version_ << " " << resString(status_code_);
         return statusLine.str();
     }
-bool Response::headerExists(std::string headerKey) {
-    return (headers.count(headerKey) > 0);
-}
 
-std::string Response::getHeader(std::string headerKey) {
-    // If key doesn't exist, return the empty string
-    if ( !headerExists(headerKey) )
-        return "";
-    return headers.find(headerKey)->second;
-}
+    bool Response::headerExists(std::string headerKey) {
+        return (headers.count(headerKey) > 0);
+    }
 
-Response::StatusCode Response::getStatus() const {
-    return status_code_;
-}
+    std::string Response::getHeader(std::string headerKey) {
+        // If key doesn't exist, return the empty string
+        if ( !headerExists(headerKey) )
+            return "";
+        return headers.find(headerKey)->second;
+    }
+
+    Response::StatusCode Response::getStatus() const {
+        return status_code_;
+    }
     
 } // namespace server
 } // namespace http

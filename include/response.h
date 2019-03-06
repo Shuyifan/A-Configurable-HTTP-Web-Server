@@ -34,6 +34,13 @@ public:
         version_ = "1.1";
     }
 
+    //a default constructor that returns default values for test use
+    Response(std::string default_) { 
+        version_ = "1.1";
+        mime_type_ = "text/plain";
+        headers.emplace("Content-type", "text/plain");
+    }
+
     StatusCode getStatusCode(int status_code);
 
     void SetStatus(const StatusCode status_code) {

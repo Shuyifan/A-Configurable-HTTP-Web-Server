@@ -8,6 +8,67 @@ protected:
 
     http::server::Response res;
 };
+
+TEST_F(ResponseTest, TestGetVersion) {
+    http::server::Response res("default");
+    std::string ver = res.GetVersion();
+    EXPECT_EQ(ver, "1.1");
+}
+
+TEST_F(ResponseTest, TestSetVersion) {
+    http::server::Response res("default");
+    res.SetVersion("1.2");
+    std::string ver = res.GetVersion();
+    EXPECT_EQ(ver, "1.2");
+}
+
+TEST_F(ResponseTest, TestGetStatusCode) {
+    http::server::Response res("default");
+    http::server::Response::StatusCode code = res.getStatusCode(200);
+    EXPECT_EQ(code, http::server::Response::StatusCode::ok);
+}
+
+TEST_F(ResponseTest, TestgetStatus) {
+    http::server::Response res("default");
+    res.SetStatus(http::server::Response::StatusCode::ok);
+    http::server::Response::StatusCode code = res.getStatus();
+    EXPECT_EQ(code, http::server::Response::StatusCode::ok);
+}
+
+TEST_F(ResponseTest, TestSetGetStatus) {
+    http::server::Response res("default");
+    res.SetStatus(http::server::Response::StatusCode::ok);
+    http::server::Response::StatusCode code = res.GetStatus();
+    EXPECT_EQ(code, http::server::Response::StatusCode::ok);
+}
+
+TEST_F(ResponseTest, TestSetGetContent) {
+    http::server::Response res("default");
+    res.SetContent("hello");
+    std::string content = res.getBody();
+    EXPECT_EQ(content, "hello");
+}
+
+TEST_F(ResponseTest, TestHeaderExists) {
+    http::server::Response res("default");
+    bool exist = res.headerExists("Content-type");
+    EXPECT_EQ(exist, true);
+}
+
+TEST_F(ResponseTest, TestgetHeader) {
+    http::server::Response res("default");
+    std::string header = res.getHeader("Content-type");
+    EXPECT_EQ(header, "text/plain");
+}
+
+
+TEST_F(ResponseTest, TestgetStatusLine) {
+    http::server::Response res("default");
+    res.SetStatus(http::server::Response::StatusCode::ok);
+    std::string StatusLine = res.getStatusLine();
+    EXPECT_EQ(StatusLine, "HTTP/1.1 200 OK\r\n");
+}
+
 //this test test the resString's functionality
 TEST_F(ResponseTest, TestToString) {
     res.SetVersion("1.1");

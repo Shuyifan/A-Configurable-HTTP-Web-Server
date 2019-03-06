@@ -7,7 +7,7 @@
 namespace http {
 namespace server {
 class ViewMemeHandler : public RequestHandler {
-public:	
+public:
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 
