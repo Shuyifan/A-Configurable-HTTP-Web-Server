@@ -39,7 +39,7 @@ include_directories(include)
 add_library(server_lib src/server.cc src/session.cc src/config_parser.cc
                         src/request_parser.cc src/echo_handler.cc src/mime_types.cc src/static_handler.cc
                         src/error_handler.cc src/status_handler.cc src/create_form_handler.cc src/proxy_handler.cc
-                        src/list_meme_handler.cc src/accept_handler.cc src/view_meme_handler src/default_handler.cc
+                        src/list_meme_handler.cc src/accept_handler.cc src/view_meme_handler src/health_handler.cc src/default_handler.cc
                         src/response.cc src/handler_manager.cc src/response_parser.cc src/client.cc src/types.cc src/utils.cc)
 
 # TODO(!): Update executable name, srcs, and deps
@@ -52,7 +52,7 @@ add_executable(test_all tests/config_parser_test.cc tests/session_test.cc
                         tests/mime_types_test.cc tests/utils_test.cc tests/default_handler_test.cc tests/response_test.cc
                         tests/handler_manager_test.cc tests/error_handler_test.cc tests/create_form_handler_test tests/gmock_server_test.cc
                         tests/response_parser_test.cc tests/client_test.cc tests/proxy_handler_test.cc
-                        tests/list_meme_handler_test.cc tests/accept_handler_test.cc tests/view_meme_handler_test.cc)
+                        tests/list_meme_handler_test.cc tests/accept_handler_test.cc tests/view_meme_handler_test.cc tests/health_handler_test.cc)
 #add_executable(config_parser_test tests/config_parser_test.cc)
 #add_executable(session_test tests/session_test.cc)
 #add_executable(request_parser_test tests/request_parser_test.cc)

@@ -16,6 +16,7 @@
 #include "accept_handler.h"
 #include "config_parser.h"
 #include "handler_parameter.h"
+#include "health_handler.h"
 
 namespace http {
 namespace server {

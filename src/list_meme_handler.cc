@@ -11,7 +11,6 @@
 namespace http {
 namespace server {
     http::server::RequestHandler* ListMemeHandler::create(const NginxConfig& config, const std::string& root_path) {
-        /*TODO:need to fill in the generatl functionality of create*/
         http::server::ListMemeHandler* handler = new http::server::ListMemeHandler();
         for(const auto& statement : config.statements_) {
 			const std::vector<std::string> tokens = statement->tokens_;

@@ -57,7 +57,10 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "listMeme") {
         handler.reset(http::server::ListMemeHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
-    } else if(name == "default") {
+    } else if(name == "health") {
+        handler.reset(http::server::HealthHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
+    }else if(name == "default") {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Default Handler called";
     } else {
