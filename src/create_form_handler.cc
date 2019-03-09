@@ -52,7 +52,7 @@ namespace server {
         response_->SetVersion("1.1");
 
         std::string fileContent = generateHTML(update, id);
-        if(fileContent.find("Invaid") == fileContent.npos) {
+        if(fileContent.find("Invalid") == fileContent.npos) {
             response_->SetStatus(Response::ok);
         } else {
             response_->SetStatus(Response::not_found);
