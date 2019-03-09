@@ -14,6 +14,7 @@
 #include "view_meme_handler.h"
 #include "list_meme_handler.h"
 #include "accept_handler.h"
+#include "delete_handler.h"
 #include "config_parser.h"
 #include "handler_parameter.h"
 #include "health_handler.h"

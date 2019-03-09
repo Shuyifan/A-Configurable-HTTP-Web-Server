@@ -111,6 +111,7 @@ namespace server {
         ss << "</div>";
         ss << "<br>";
         ss << "<a class=\"btn btn-primary btn-lg\" href=\"/meme/new?update=" << id << "\" role=\"button\">Edit</a>";
+        ss << "<a class=\"btn btn-danger btn-lg\" href=\"/meme/delete?id=" << id << "\" role=\"button\" onclick=\"return confirm('Are you sure?')\">Delete</a>";
         ss << "</body>";
         ss << "</html>";
 
