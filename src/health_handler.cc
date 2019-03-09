@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "health_handler.h"
 #include <boost/filesystem.hpp>
-#include "bad_request_handler.h"
+
 namespace http {
 namespace server {
     http::server::RequestHandler* HealthHandler::create(const NginxConfig& config, const std::string& root_path) {
@@ -16,10 +16,7 @@ namespace server {
     }
 
     std::unique_ptr<http::server::Response> HealthHandler::HandlerRequest(const request& request) {
-        if(request.getStatus() == http::server::request::StatusCode::bad_request){
-            http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
-            return handler->HandlerRequest(request);
-        }
+
         std::unique_ptr<http::server::Response> response_ (new http::server::Response);
         response_->SetVersion("1.1");
         response_->SetStatus(http::server::Response::ok);

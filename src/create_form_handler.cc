@@ -7,7 +7,6 @@
 #include <boost/filesystem.hpp>
 #include "utils.h"
 #include "create_form_handler.h"
-#include "bad_request_handler.h"
 namespace http {
 namespace server {
     RequestHandler* CreateFormHandler::create(const NginxConfig& config, 
@@ -34,10 +33,6 @@ namespace server {
     }
 
     std::unique_ptr<Response> CreateFormHandler::HandlerRequest(const request& request) {
-        if(request.getStatus() == http::server::request::StatusCode::bad_request){
-            http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
-            return handler->HandlerRequest(request);
-        }
         std::unique_ptr<Response> response_ (new Response);
 
         bool update = false;

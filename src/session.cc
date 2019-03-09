@@ -10,7 +10,7 @@
 #include "default_handler.h"
 #include "handler_manager.h"
 #include "response.h"
-
+#include "bad_request_handler.h"
 using boost::asio::ip::tcp;
 
 session::session(boost::asio::io_service& io_service, 
@@ -43,7 +43,7 @@ void session::handle_read(const boost::system::error_code &error,
             BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
             BOOST_LOG_TRIVIAL(info) << data_;
             BOOST_LOG_TRIVIAL(info) << request_.uri;
-            request_.SetStatus(http::server::request::StatusCode::ok);
+           
             std::unique_ptr<http::server::RequestHandler> requestHandler =
                 handlerManager_.createByUrl(request_.uri);
 
@@ -61,7 +61,8 @@ void session::handle_read(const boost::system::error_code &error,
         } else if (result == http::server::request_parser::indeterminate) {
             start();
         } else {
-            request_.SetStatus(http::server::request::StatusCode::bad_request);
+            http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
+            std::unique_ptr<http::server::Response> resp = handler->HandlerRequest(request_);
             request_.clear();
             BOOST_LOG_TRIVIAL(warning) << "Invalid request";
             BOOST_LOG_TRIVIAL(info) << data_;

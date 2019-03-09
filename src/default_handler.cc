@@ -2,7 +2,6 @@
 #include <sstream>
 #include <string>
 #include "default_handler.h"
-#include "bad_request_handler.h"
 namespace http {
 namespace server {
 
@@ -13,10 +12,6 @@ http::server::RequestHandler* DefaultHandler::create(const NginxConfig& config,
 }
 
 std::unique_ptr<http::server::Response> DefaultHandler::HandlerRequest(const request& request) {
-    if(request.getStatus() == http::server::request::StatusCode::bad_request){
-        http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
-        return handler->HandlerRequest(request);
-    }
     std::unique_ptr<http::server::Response> response_ (new http::server::Response);
     response_->SetVersion("1.1");
     response_->SetStatus(http::server::Response::ok);

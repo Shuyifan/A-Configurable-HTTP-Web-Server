@@ -26,39 +26,12 @@ struct request
   int http_version_minor;
   std::vector<header> headers;
   std::string body;
-
   void clear() {
     method = "";
     uri = "";
     headers.clear();
   }
-  
-  enum StatusCode {
-        ok = 200,
-        bad_request = 400,
-  };
-  StatusCode status_code_;
-  StatusCode getStatusCode(int status_code) {
-        switch (status_code) {
-            case 200:
-                return ok;
-            case  400:
-                return bad_request;
 
-        }
-  }
-
-
-  void SetStatus(const StatusCode status_code) {
-    status_code_ = status_code;
-  }
-
-  StatusCode GetStatus(){
-    return status_code_;
-  }
-  StatusCode getStatus() const {
-    return status_code_;
-  }
   std::string rawString() {
     std::string request;
     request.append(method);

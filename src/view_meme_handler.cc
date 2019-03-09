@@ -6,7 +6,6 @@
 
 #include "utils.h"
 #include "view_meme_handler.h"
-#include "bad_request_handler.h"
 namespace http {
 namespace server {
     RequestHandler* ViewMemeHandler::create(const NginxConfig& config, 
@@ -27,10 +26,6 @@ namespace server {
     }
 
     std::unique_ptr<Response> ViewMemeHandler::HandlerRequest(const request& request) {
-	    if(request.getStatus() == http::server::request::StatusCode::bad_request){
-		    http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
-		    return handler->HandlerRequest(request);
-        }
         int id = getID(request.uri);
 
         std::unique_ptr<Response> response_ (new Response);
