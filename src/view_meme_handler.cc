@@ -37,6 +37,8 @@ namespace server {
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
         if(content.empty()) {
             response_->SetStatus(Response::no_content);
+        } else {
+            response_->SetStatus(Response::ok);
         }
         response_->SetContent(content);
         return response_;
@@ -82,19 +84,24 @@ namespace server {
         ss << "<head>";
         ss << "<meta charset=\"utf-8\">";
         ss << "<title>Your Meme</title>";
+        ss << "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">";
         ss << "<style>";
-        ss << "body { display: inline-block; position: relative; }";
+        ss << "#out { display: inline-block; position: relative; }";
         ss << "span { color: white; font: 2em bold Impact, sans-serif; position: absolute; text-align: center; width: 100%; }";
         ss << "#top { top: 0; }";
         ss << "#bottom { bottom: 0; }";
-        ss << "div { width: 576px; height: 421px; background: url(../files/images/" << imageName << "); }";
+        ss << "#in { width: 576px; height: 421px; background: url(../files/images/" << imageName << "); }";
         ss << "</style>";
         ss << "</head>";
         ss << "<body>";
-        ss << "<div>";
+        ss << "<div id=\"out\">";
+        ss << "<div id=\"in\">";
         ss << "<span id=\"top\">" << decoded_top << "</span>";
         ss << "<span id=\"bottom\">" << decoded_bottom << "</span>";
         ss << "</div>";
+        ss << "</div>";
+        ss << "<br>";
+        ss << "<a class=\"btn btn-primary btn-lg\" href=\"/meme/new?update=" << id << "\" role=\"button\">Edit</a>";
         ss << "</body>";
         ss << "</html>";
 

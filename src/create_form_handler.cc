@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 
+#include <boost/filesystem.hpp>
 #include "utils.h"
 #include "create_form_handler.h"
 
@@ -14,24 +15,48 @@ namespace server {
         CreateFormHandler* handler = new CreateFormHandler();
         for(const auto& statement : config.statements_) {
             const std::vector<std::string> tokens = statement->tokens_;
-            if(tokens[0] == "root") {
-                handler->setFile(root_path + "/" + tokens[1]);
-                break;
+            if(tokens[0] == "rootI") {
+                handler->setImageDir(root_path + "/" + tokens[1]);
+            }
+            if(tokens[0] == "rootD") {
+                handler->setDataDir(root_path + "/" + tokens[1]);
             }
         }
         return handler;
     }
 
-    void CreateFormHandler::setFile(std::string file) {
-        file_ = file;
+    void CreateFormHandler::setImageDir(std::string imageDir) {
+        imageDir_ = imageDir;
+    }
+
+    void CreateFormHandler::setDataDir(std::string dataDir) {
+        dataDir_ = dataDir;
     }
 
     std::unique_ptr<Response> CreateFormHandler::HandlerRequest(const request& request) {
         std::unique_ptr<Response> response_ (new Response);
+
+        bool update = false;
+        int id;
+        if(request.uri.find("update") != request.uri.npos) {
+            update = true;
+            int pos = request.uri.find("update");
+            int start = request.uri.find("=", pos) + 1;
+            int end = start + 1;
+            while(end < request.uri.size() && request.uri[end] != '?') {
+                end++;
+            }
+            id = std::stoi(request.uri.substr(start, end - start));
+        }  
+
         response_->SetVersion("1.1");
 
-        response_->SetStatus(Response::ok);
-        std::string fileContent = generateHTML();
+        std::string fileContent = generateHTML(update, id);
+        if(fileContent.find("Invaid") == fileContent.npos) {
+            response_->SetStatus(Response::ok);
+        } else {
+            response_->SetStatus(Response::not_found);
+        }
 
         response_->AddHeader("Content-Length", std::to_string(fileContent.size()));
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
@@ -44,7 +69,27 @@ namespace server {
         return response_;
     }
 
-    std::string CreateFormHandler::generateHTML() {
+    std::string CreateFormHandler::generateHTML(bool update, int id) {
+        std::string top, bottom;
+        if(update) {
+            std::string targetFile = get_server_dir() + dataDir_ + "/meme" + std::to_string(id);
+            if(!boost::filesystem::exists(targetFile)) {
+                return "<h1> Invalid ID! </h1>";
+            }
+            NginxConfigParser config_parser;
+            NginxConfig config;
+            config_parser.Parse(targetFile.c_str(), &config);
+            for(const auto& statement : config.statements_) {
+                const std::vector<std::string> tokens = statement->tokens_;
+                if(tokens[0] == "top") {
+                    top = tokens[1];
+                }
+                if(tokens[0] == "bottom") {
+                    bottom = tokens[1];
+                }
+            }
+        }
+
         std::stringstream ss;
         
         ss << "<!DOCTYPE html>";
@@ -56,7 +101,11 @@ namespace server {
         ss << "</head>";
         ss << "<body>";
         ss << "<div class=\"container\">";
-        ss << "<h2>Create your meme!</h2>";
+        if(update) {
+            ss << "<h2>Edit the meme!</h2>";
+        } else {
+            ss << "<h2>Create your meme!</h2>";
+        }
         ss << "<form action=\"/meme/create\" method=\"post\">";
         ss << "<div class=\"form-group\">";
         ss << "<label>Select a template</label>";
@@ -64,8 +113,8 @@ namespace server {
         ss << "<option value="">Select a template...</option>";
         
         std::vector<std::string> image_name;
-        std::cout << get_server_dir() + file_ << std::endl;
-        find_files_in_folder(get_server_dir() + file_, image_name);
+        std::cout << get_server_dir() + imageDir_ << std::endl;
+        find_files_in_folder(get_server_dir() + imageDir_, image_name);
         for(auto const& image: image_name) {
             ss << "<option value=\"";
             ss << get_file_name(image).substr(1); 
@@ -78,12 +127,23 @@ namespace server {
         ss << "</div>";
         ss << "<div class=\"form-group\">";
         ss << "<label>Top Text</label>";
-        ss << "<input type=\"text\" class=\"form-control\" name=\"top\" placeholder=\"Top text...\" required=true>";
+        if(update) {
+            ss << "<input type=\"text\" class=\"form-control\" name=\"top\" value=\"" << top << "\" required=true>";
+        } else {
+            ss << "<input type=\"text\" class=\"form-control\" name=\"top\" placeholder=\"Top text...\" required=true>";
+        }
         ss << "</div>";
         ss << "<div class=\"form-group\">";
         ss << "<label for=\"exampleInputPassword1\">Bottom Text</label>";
-        ss << "<input type=\"text\" class=\"form-control\" name=\"bottom\" placeholder=\"Bottom text...\" required=true>";
+        if(update) {
+            ss << "<input type=\"text\" class=\"form-control\" name=\"bottom\" value=\"" << bottom << "\" required=true>";
+        } else {
+            ss << "<input type=\"text\" class=\"form-control\" name=\"bottom\" placeholder=\"Bottom text...\" required=true>";
+        }
         ss << "</div>";
+        if(update) {
+            ss << "<input type=\"hidden\" name=\"update\" value=\"" << id << "\">";
+        }
         ss << "<button type=\"submit\" class=\"btn btn-primary\">Create</button>";
         ss << "</form>";
         ss << "</div>";   

@@ -17,7 +17,7 @@ public:
     void setRootDir(std::string dir);
 
 private:
-    std::string generateHTML(int id);
+    std::string generateHTML(bool update, int id);
     void sanitizeInput(std::string& rawInput);
     void saveToFile(const std::string data, int id);
     std::string fileDir_;

@@ -12,14 +12,15 @@ public:
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 
-	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;
+	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;	
 
-    void setFile(std::string file);
-
-	std::string generateHTML();
+	void setImageDir(std::string dir);
+	void setDataDir(std::string dir);
 
 private:
-    std::string file_;
+	std::string generateHTML(bool update, int id);
+    std::string imageDir_;
+	std::string dataDir_;
 };
 }
 }

@@ -33,22 +33,41 @@ namespace server {
     }
 
     std::unique_ptr<Response> AcceptHandler::HandlerRequest(const request& request) {
+        bool update = false;
         int id;
-        std::string idFile = rootDir_ + "/id";
-        if(!boost::filesystem::exists(idFile)) {
-            id = 1;
+        if(request.body.find("update") != request.body.npos) {
+            update = true;
+            int pos = request.body.find("update");
+            int start = request.body.find("=", pos) + 1;
+            int end = start + 1;
+            while(end < request.body.size() && request.body[end] != '?') {
+                end++;
+            }
+            id = std::stoi(request.body.substr(start, end - start));
         } else {
-            std::ifstream is(idFile);
-            is >> id;
-            is.close();
+            std::string idFile = rootDir_ + "/id";
+            if(!boost::filesystem::exists(idFile)) {
+                id = 1;
+            } else {
+                std::ifstream is(idFile);
+                is >> id;
+                is.close();
+            }
         }
-
-        saveToFile(request.body, id);
 
         std::unique_ptr<Response> response_ (new Response);
         response_->SetVersion("1.1");
 
-        std::string content = generateHTML(id);
+        if(request.body.find("image") == request.body.npos || request.body.find("top") == request.body.npos || request.body.find("bottom") == request.body.npos) {
+            response_->SetStatus(Response::not_found);
+            response_->SetContent("<h1>Error!</h1>");
+            response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
+            return response_;
+        }
+
+        saveToFile(request.body, id);
+
+        std::string content = generateHTML(update, id);
         response_->AddHeader("Content-Length", std::to_string(content.size()));
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
         if(content.empty()) {
@@ -61,7 +80,7 @@ namespace server {
         return response_;
     }
 
-    std::string AcceptHandler::generateHTML(int id) {
+    std::string AcceptHandler::generateHTML(bool update, int id) {
         std::stringstream ss;
         ss << "<!DOCTYPE html>";
         ss << "<html lang=\"en\" dir=\"ltr\">";
@@ -86,10 +105,13 @@ namespace server {
         ss << "</body>";
         ss << "</html>";
 
-        std::string idFile = rootDir_ + "/id";
-        std::ofstream os(idFile);
-        id++;
-        os << id;
+        if(!update) {
+            std::string idFile = rootDir_ + "/id";
+            std::ofstream os(idFile);
+            id++;
+            os << id;
+        }
+        
         return ss.str();
     }
 
@@ -139,7 +161,11 @@ namespace server {
         for(int i = 0; i < fields.size(); i++) {
             positions.push_back(body.find(fields[i]) - 1);
         }
-        positions.push_back(body.size());
+        if(body.find("update") == body.npos) {
+            positions.push_back(body.size());
+        } else {
+            positions.push_back(body.find("update") - 1);
+        }
 
         for(int i = 0; i < fields.size(); i++) {
             int start = positions[i] + 1;
