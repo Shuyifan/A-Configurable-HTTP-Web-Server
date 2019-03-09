@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 
+#include <boost/filesystem.hpp>
 #include "utils.h"
 #include "view_meme_handler.h"
 namespace http {
@@ -32,12 +33,16 @@ namespace server {
         response_->SetVersion("1.1");
 
         std::string content = generateHTML(id);
+        if(content.find("Invalid") != content.npos) {
+            response_->SetStatus(Response::not_found);
+        } else {
+            response_->SetStatus(Response::ok);
+        }
+        
         response_->AddHeader("Content-Length", std::to_string(content.size()));
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
         if(content.empty()) {
             response_->SetStatus(Response::no_content);
-        } else {
-            response_->SetStatus(Response::ok);
         }
         response_->SetContent(content);
         return response_;
@@ -55,6 +60,9 @@ namespace server {
 
     std::string ViewMemeHandler::generateHTML(int id) {
         std::string targetFile = get_server_dir() + dir_ + "/meme" + std::to_string(id);
+        if(!boost::filesystem::exists(targetFile)) {
+            return "<h1>Invalid ID!</h1>";
+        }
         NginxConfigParser config_parser;
         NginxConfig config;
         config_parser.Parse(targetFile.c_str(), &config);
@@ -77,6 +85,8 @@ namespace server {
         std::string decoded_bottom;
         url_decode(top, decoded_top);
         url_decode(bottom, decoded_bottom);
+        sanitizeInput(decoded_top);
+        sanitizeInput(decoded_bottom);
 
         ss << "<!DOCTYPE html>";
         ss << "<html lang=\"en\" dir=\"ltr\">";

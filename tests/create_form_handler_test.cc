@@ -16,7 +16,7 @@ protected:
         requestUpdate1.http_version_minor = 1;
 
         requestUpdate2.method = "GET";
-        requestUpdate2.uri = "/meme/new?update=4";
+        requestUpdate2.uri = "/meme/new?update=5";
         requestUpdate2.http_version_major = 1;
         requestUpdate2.http_version_minor = 1;
 

@@ -1,33 +1,60 @@
 #include "gtest/gtest.h"
-#include <iostream>
-#include "request.h"
-#include "response.h"
-#include "view_meme_handler.h"
-#include "utils.h"
+#include "handler_manager.h"
 
 class ViewMemeHandlerTest : public ::testing::Test {
-    protected:
-        http::server::request request_;
-        http::server::ViewMemeHandler* requestHandler = new http::server::ViewMemeHandler();
+protected:
+
+    void SetUp() {
+        parser.Parse("test.conf", &config);
+        manager = new http::server::HandlerManager(config);
+        handler = manager->createByUrl("/meme/view");
+    }
+
+    std::unique_ptr<http::server::RequestHandler> handler;
+    NginxConfig config;
+    NginxConfigParser parser;
+    http::server::HandlerManager* manager;
+    http::server::request request;
 };
 
-TEST_F(ViewMemeHandlerTest, GetID_) {
-    const std::string uri = "id=90034?27109";
-    int res = requestHandler->getID(uri);
-    EXPECT_EQ(res, 90034);
+TEST_F(ViewMemeHandlerTest, NormalRequest) {
+    request.method = "GET";
+    request.uri = "/meme/view?id=1";
+    request.http_version_major = 1;
+    request.http_version_minor = 1;
+    std::unique_ptr<http::server::Response> response = handler->HandlerRequest(request);
+    std::string resStr = response->ToString();
+
+    EXPECT_EQ(resStr.substr(0, 15), "HTTP/1.1 200 OK");
+
+    EXPECT_TRUE(resStr.find("wings.jpg") != resStr.npos);
+    EXPECT_TRUE(resStr.find("id1_test") != resStr.npos);
+    EXPECT_TRUE(resStr.find("update=1") != resStr.npos);
 }
 
-// TEST_F(ViewMemeHandlerTest, GenerateHTML_) {
-//     int id = 90034;
-//     std::string res = requestHandler->generateHTML(id);
-    
-//     EXPECT_EQ(1, 1);
-// }
+TEST_F(ViewMemeHandlerTest, InvalidId) {
+    request.method = "GET";
+    request.uri = "/meme/view?id=5";
+    request.http_version_major = 1;
+    request.http_version_minor = 1;
+    std::unique_ptr<http::server::Response> response = handler->HandlerRequest(request);
+    std::string resStr = response->ToString();
 
-TEST_F(ViewMemeHandlerTest, ViewMemeRequest_) {
-    std::unique_ptr<http::server::Response> response_;
-    request_.uri = "id=90034?27109";
-    response_ = requestHandler->HandlerRequest(request_);
-    std::string version = response_->GetVersion();
-    EXPECT_EQ(version, "1.1");
+    EXPECT_EQ(resStr.substr(0, 22), "HTTP/1.1 404 Not Found");
+
+    EXPECT_TRUE(resStr.find("Invalid") != resStr.npos);
+}
+
+TEST_F(ViewMemeHandlerTest, EscapeUserInput) {
+    request.method = "GET";
+    request.uri = "/meme/view?id=4";
+    request.http_version_major = 1;
+    request.http_version_minor = 1;
+    std::unique_ptr<http::server::Response> response = handler->HandlerRequest(request);
+    std::string resStr = response->ToString();
+
+    EXPECT_EQ(resStr.substr(0, 15), "HTTP/1.1 200 OK");
+
+    EXPECT_FALSE(resStr.find("<script>") != resStr.npos);
+    EXPECT_TRUE(resStr.find("&lt;script&gt;") != resStr.npos);
 }
