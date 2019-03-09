@@ -115,34 +115,6 @@ namespace server {
         return ss.str();
     }
 
-    // reference: https://stackoverflow.com/questions/5665231/most-efficient-way-to-escape-xml-html-in-c-string
-    void AcceptHandler::sanitizeInput(std::string& rawInput) {
-        std::string buffer;
-        buffer.reserve(rawInput.size());
-        for(size_t pos = 0; pos != rawInput.size(); ++pos) {
-            switch(rawInput[pos]) {
-                case '&':
-                    buffer.append("&amp;");
-                    break;
-                case '\"':
-                    buffer.append("&quot;");
-                    break;
-                case '\'':
-                    buffer.append("&apos;");
-                    break;
-                case '<':
-                    buffer.append("&lt;");
-                    break;
-                case '>':
-                    buffer.append("&gt;");
-                    break;
-                default:
-                    buffer.append(&rawInput[pos], 1);
-            }
-        }
-        rawInput.swap(buffer);
-    }
-
     void AcceptHandler::saveToFile(const std::string body, int id) {
         boost::filesystem::path dir(fileDir_);
         if(!(boost::filesystem::exists(dir))) {
@@ -173,7 +145,6 @@ namespace server {
             int equalPos = body.find("=", start);
             std::string name = body.substr(start, equalPos - start);
             std::string value = body.substr(equalPos + 1, end - equalPos - 1);
-            sanitizeInput(value);
             os << name << " " << value << ";\n";
         }
     }

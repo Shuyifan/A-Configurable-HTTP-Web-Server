@@ -77,3 +77,31 @@ void find_files_in_folder(std::string path, std::vector<std::string>& file_name)
 	    }
 	}
 }
+
+// reference: https://stackoverflow.com/questions/5665231/most-efficient-way-to-escape-xml-html-in-c-string
+void sanitizeInput(std::string& rawInput) {
+	std::string buffer;
+	buffer.reserve(rawInput.size());
+	for(size_t pos = 0; pos != rawInput.size(); ++pos) {
+		switch(rawInput[pos]) {
+			case '&':
+				buffer.append("&amp;");
+				break;
+			case '\"':
+				buffer.append("&quot;");
+				break;
+			case '\'':
+				buffer.append("&apos;");
+				break;
+			case '<':
+				buffer.append("&lt;");
+				break;
+			case '>':
+				buffer.append("&gt;");
+				break;
+			default:
+				buffer.append(&rawInput[pos], 1);
+		}
+	}
+	rawInput.swap(buffer);
+}

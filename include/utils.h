@@ -34,3 +34,5 @@ Perform URL-decoding on a string. Returns false if the encoding was invalid.
 bool url_decode(const std::string& in, std::string& out);
 
 void find_files_in_folder(std::string path, std::vector<std::string>& file_name);
+
+void sanitizeInput(std::string& rawInput);

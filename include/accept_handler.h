@@ -18,7 +18,6 @@ public:
 
 private:
     std::string generateHTML(bool update, int id);
-    void sanitizeInput(std::string& rawInput);
     void saveToFile(const std::string data, int id);
     std::string fileDir_;
     std::string rootDir_;
