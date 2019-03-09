@@ -6,6 +6,7 @@
 #include "config_parser.h"
 #include "utils.h"
 #include "list_meme_handler.h"
+#include "bad_request_handler.h"
 #include <boost/filesystem.hpp>
 
 namespace http {
@@ -22,6 +23,10 @@ namespace server {
     }
 
     std::unique_ptr<http::server::Response> ListMemeHandler::HandlerRequest(const request& request) {
+        if(request.getStatus() == http::server::request::StatusCode::bad_request){
+            http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
+            return handler->HandlerRequest(request);
+        }
         std::vector<std::string> file_name;
         find_files_in_folder(get_server_dir() + root_, file_name);
 

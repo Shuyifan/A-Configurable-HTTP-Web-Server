@@ -7,7 +7,7 @@
 
 #include "utils.h"
 #include "accept_handler.h"
-
+#include "bad_request_handler.h"
 namespace http {
 namespace server {
     RequestHandler* AcceptHandler::create(const NginxConfig& config, 
@@ -33,6 +33,10 @@ namespace server {
     }
 
     std::unique_ptr<Response> AcceptHandler::HandlerRequest(const request& request) {
+        if(request.getStatus() == http::server::request::StatusCode::bad_request){
+            http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
+            return handler->HandlerRequest(request);
+        }
         bool update = false;
         int id;
         if(request.body.find("update") != request.body.npos) {

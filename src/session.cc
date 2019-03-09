@@ -42,7 +42,8 @@ void session::handle_read(const boost::system::error_code &error,
         if(result == http::server::request_parser::good) {
             BOOST_LOG_TRIVIAL(info) << "Successfully parse request";
             BOOST_LOG_TRIVIAL(info) << data_;
-
+            BOOST_LOG_TRIVIAL(info) << request_.uri;
+            request_.SetStatus(http::server::request::StatusCode::ok);
             std::unique_ptr<http::server::RequestHandler> requestHandler =
                 handlerManager_.createByUrl(request_.uri);
 
@@ -60,6 +61,7 @@ void session::handle_read(const boost::system::error_code &error,
         } else if (result == http::server::request_parser::indeterminate) {
             start();
         } else {
+            request_.SetStatus(http::server::request::StatusCode::bad_request);
             request_.clear();
             BOOST_LOG_TRIVIAL(warning) << "Invalid request";
             BOOST_LOG_TRIVIAL(info) << data_;

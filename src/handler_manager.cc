@@ -63,7 +63,11 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     }else if(name == "default") {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Default Handler called";
-    } else {
+    } else if(name == "bad") {
+        handler.reset(http::server::BadRequestHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "Bad Request Handler called";
+    }else {
+        
         handler.reset(http::server::ErrorHandler::create(config, root_path));
     }
 

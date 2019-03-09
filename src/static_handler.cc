@@ -14,6 +14,7 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include "bad_request_handler.h"
 namespace http {
 namespace server {
 
@@ -41,7 +42,10 @@ void StaticHandler::setParameter(std::string url, http::server::handler_paramete
 }
 
 std::unique_ptr<http::server::Response> StaticHandler::HandlerRequest(const request& request) {
-
+	if(request.getStatus() == http::server::request::StatusCode::bad_request){
+		http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
+		return handler->HandlerRequest(request);
+  }
 	std::unique_ptr<http::server::Response> response_ (new http::server::Response);
 	response_->SetVersion("1.1");
 

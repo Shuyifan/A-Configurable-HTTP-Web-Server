@@ -17,7 +17,7 @@
 #include "config_parser.h"
 #include "handler_parameter.h"
 #include "health_handler.h"
-
+#include "bad_request_handler.h"
 namespace http {
 namespace server {
 

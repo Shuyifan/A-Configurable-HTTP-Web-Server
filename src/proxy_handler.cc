@@ -7,7 +7,7 @@
 #include "request_handler.h"
 #include "client.h"
 #include "utils.h"
-
+#include "bad_request_handler.h"
 namespace http {
 namespace server {
 
@@ -25,7 +25,10 @@ ProxyHandler* ProxyHandler::create(const NginxConfig& config, const std::string&
 }
 
 std::unique_ptr<http::server::Response> ProxyHandler::HandlerRequest(const request& theRequest) {
-
+    if(theRequest.getStatus() == http::server::request::StatusCode::bad_request){
+        http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
+        return handler->HandlerRequest(theRequest);
+    }
     BOOST_LOG_TRIVIAL(trace) << "Handling proxy request";
 
     // determine url and hostname (address) for request to remote server
