@@ -53,3 +53,9 @@ TEST_F(UtilsTest, findFilesInFolderTest) {
     find_files_in_folder(path, file_names);
     EXPECT_EQ(file_names.size(), 2);
 }
+
+TEST_F(UtilsTest, sanitizeInputTest) {
+    std::string input = "abc<>\'\"&";
+    sanitizeInput(input);
+    EXPECT_EQ(input, "abc&lt;&gt;&apos;&quot;&amp;");
+}
