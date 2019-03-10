@@ -55,6 +55,12 @@ namespace server {
         ss << "<body>";
         ss << "<div class=\"container\">";
         ss << "<h2>The Meme List</h2>";
+        ss << "<form method=\"get\">";
+        ss << "<div class=\"form-group\">";
+        ss << "<input type=\"text\" class=\"form-control\" name=\"q\" placeholder=\"Search\">";
+        ss << "</div>";
+        ss << "<button type=\"submit\" class=\"btn btn-primary\" value=\"Search\">Search</button>";
+        ss << "</form>";
         ss << "<table class=\"table table-striped\">";
         ss << "<thead>";
         ss << "<tr>";
@@ -74,8 +80,9 @@ namespace server {
                 const std::vector<std::string> tokens = statement->tokens_;
                 std::string decoded_text;
                 url_decode(tokens[1], decoded_text);
+                sanitizeInput(decoded_text);
                 if(tokens[0] == "id") {
-                    ss << "<th scope=\"row\">" << decoded_text << "</th>";
+                    ss << "<th scope=\"row\">" << "<a href=\"view?id=" << decoded_text << "\">" << decoded_text << "</a>" << "</th>";
                 } else {
                     ss << "<td>" << decoded_text << "</td>";
                 }
