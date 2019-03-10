@@ -1,50 +1,8 @@
 #include "response.h"
 #include <iostream>
 #include <sstream>
-#include <boost/log/trivial.hpp>
 namespace http {
 namespace server {
-
-
-    Response::StatusCode Response::getStatusCode(int status_code) {
-        switch (status_code) {
-            case 200:
-                return ok;
-            case 201:
-                return created;
-            case 202:
-                return accepted;
-            case  204:
-                return no_content;
-            case  300:
-                return multiple_choices;
-            case  301:
-                return moved_permanently;
-            case  302:
-                return moved_temporarily;
-            case  304:
-                return not_modified;
-            case  400:
-                return bad_request;
-            case  401:
-                return unauthorized;
-            case  403:
-                return forbidden;
-            case  404:
-                return not_found;
-            case  500:
-                return internal_server_error;
-            case  501:
-                return not_implemented;
-            case  502:
-                return bad_gateway;
-            case  503:
-                return service_unavailable;
-            default:
-                BOOST_LOG_TRIVIAL(warning) << "Status code " << status_code << " not recognized.  Setting to 'bad_request'";
-                return bad_request;
-        }
-    }
 
     std::string Response::resString(StatusCode status) {
         switch (status) {
@@ -65,6 +23,8 @@ namespace server {
                 return "302 Moved Temporarily\r\n";
             case  not_modified:
                 return "304 Not Modified\r\n";
+            case bad_request:
+                return "400 Bad Request\r\n";
             case  unauthorized:
                 return "401 Unauthorized\r\n";
             case  forbidden:
@@ -100,21 +60,6 @@ namespace server {
         std::stringstream statusLine;
         statusLine << "HTTP/" << version_ << " " << resString(status_code_);
         return statusLine.str();
-    }
-
-    bool Response::headerExists(std::string headerKey) {
-        return (headers.count(headerKey) > 0);
-    }
-
-    std::string Response::getHeader(std::string headerKey) {
-        // If key doesn't exist, return the empty string
-        if ( !headerExists(headerKey) )
-            return "";
-        return headers.find(headerKey)->second;
-    }
-
-    Response::StatusCode Response::getStatus() const {
-        return status_code_;
     }
     
 } // namespace server

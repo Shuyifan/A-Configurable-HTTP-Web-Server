@@ -30,19 +30,6 @@ public:
         service_unavailable = 503
     };
 
-    Response() {
-        version_ = "1.1";
-    }
-
-    //a default constructor that returns default values for test use
-    Response(std::string default_) { 
-        version_ = "1.1";
-        mime_type_ = "text/plain";
-        headers.emplace("Content-type", "text/plain");
-    }
-
-    StatusCode getStatusCode(int status_code);
-
     void SetStatus(const StatusCode status_code) {
         status_code_ = status_code;
     }
@@ -70,31 +57,16 @@ public:
         version_ = version;
     }
 
-    void SetIntStatus(int code) {
-        status_code_int_ = code; // temporary for now before lookup table is added
-    }
-
-    StatusCode StatusLookup(int code);
-
     std::string ToString();
 
     std::string getStatusLine();
 
-    bool headerExists(std::string headerKey);
-    std::string getHeader(std::string headerKey);
-    StatusCode getStatus() const;
-
-    private:
-        std::string mime_type_;
-        std::map<std::string, std::string> headers;
-        std::string content_;
-        StatusCode status_code_;
-        std::string resString(StatusCode status);
-        std::string version_;
-
-        // alternate versions of variables for ProxyHandler
-        std::vector<header> header_vec;
-        int status_code_int_;
+private:
+    std::map<std::string, std::string> headers;
+    std::string content_;
+    StatusCode status_code_;
+    std::string resString(StatusCode status);
+    std::string version_;
 
 };
 } // namespace server
