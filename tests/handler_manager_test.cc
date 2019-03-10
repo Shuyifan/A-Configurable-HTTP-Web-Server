@@ -8,7 +8,6 @@
 #include "static_handler.h"
 #include "error_handler.h"
 #include "default_handler.h"
-#include "proxy_handler.h"
 #include "health_handler.h"
 class HandlerManagerTest : public ::testing::Test {
 protected:
@@ -49,9 +48,6 @@ TEST_F(HandlerManagerTest, createByNameTest) {
 
 	temp_ptr = handler_manager.createByName("unknown", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ErrorHandler::create(emptyConfig, ""))));
-/*
-	temp_ptr = handler_manager.createByName("proxy", emptyConfig, "");
-	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ProxyHandler::create(emptyConfig, ""))));*/
 
 	temp_ptr = handler_manager.createByName("createForm", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::CreateFormHandler::create(emptyConfig, ""))));

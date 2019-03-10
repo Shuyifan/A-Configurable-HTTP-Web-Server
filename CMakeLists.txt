@@ -38,10 +38,10 @@ include_directories(include)
 # TODO(!): Update name and srcs
 add_library(server_lib src/server.cc src/session.cc src/config_parser.cc
                         src/request_parser.cc src/echo_handler.cc src/mime_types.cc src/static_handler.cc
-                        src/error_handler.cc src/status_handler.cc src/create_form_handler.cc src/proxy_handler.cc
+                        src/error_handler.cc src/status_handler.cc src/create_form_handler.cc
                         src/list_meme_handler.cc src/accept_handler.cc src/view_meme_handler src/health_handler.cc 
                         src/delete_handler.cc src/bad_request_handler.cc src/default_handler.cc src/response.cc
-                        src/handler_manager.cc src/response_parser.cc src/client.cc src/types.cc src/utils.cc)
+                        src/handler_manager.cc src/utils.cc)
 
 # TODO(!): Update executable name, srcs, and deps
 add_executable(server src/server_main.cc)
@@ -51,8 +51,7 @@ target_link_libraries(server server_lib Boost::system Boost::log_setup Boost::lo
 add_executable(test_all tests/config_parser_test.cc tests/session_test.cc
                         tests/request_parser_test.cc tests/server_test.cc tests/echo_handler_test.cc tests/static_handler_test.cc
                         tests/mime_types_test.cc tests/utils_test.cc tests/default_handler_test.cc tests/response_test.cc
-                        tests/handler_manager_test.cc tests/error_handler_test.cc tests/create_form_handler_test tests/gmock_server_test.cc
-                        tests/response_parser_test.cc tests/client_test.cc tests/proxy_handler_test.cc
+                        tests/handler_manager_test.cc tests/error_handler_test.cc tests/create_form_handler_test
                         tests/list_meme_handler_test.cc tests/accept_handler_test.cc tests/view_meme_handler_test.cc tests/health_handler_test.cc tests/bad_request_handler_test.cc)
 #add_executable(config_parser_test tests/config_parser_test.cc)
 #add_executable(session_test tests/session_test.cc)
@@ -71,4 +70,4 @@ include(cmake/CodeCoverageReportConfig.cmake)
 generate_coverage_report(TARGETS server server_lib TESTS test_all)
 #generate_coverage_report(TARGETS server server_lib TESTS config_parser_test session_test request_parser_test)
 
-add_test(NAME IntegrationTest COMMAND intergration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+#add_test(NAME IntegrationTest COMMAND intergration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)

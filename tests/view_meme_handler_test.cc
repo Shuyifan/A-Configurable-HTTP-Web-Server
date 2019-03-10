@@ -26,7 +26,6 @@ TEST_F(ViewMemeHandlerTest, NormalRequest) {
     std::string resStr = response->ToString();
 
     EXPECT_EQ(resStr.substr(0, 15), "HTTP/1.1 200 OK");
-
     EXPECT_TRUE(resStr.find("wings.jpg") != resStr.npos);
     EXPECT_TRUE(resStr.find("id1_test") != resStr.npos);
     EXPECT_TRUE(resStr.find("update=1") != resStr.npos);
