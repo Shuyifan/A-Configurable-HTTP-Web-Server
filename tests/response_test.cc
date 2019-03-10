@@ -26,6 +26,38 @@ TEST_F(ResponseTest, TestGetStatusCode) {
     http::server::Response res("default");
     http::server::Response::StatusCode code = res.getStatusCode(200);
     EXPECT_EQ(code, http::server::Response::StatusCode::ok);
+    code = res.getStatusCode(201);
+    EXPECT_EQ(code, http::server::Response::StatusCode::created);
+    code = res.getStatusCode(202);
+    EXPECT_EQ(code, http::server::Response::StatusCode::accepted);
+    code = res.getStatusCode(204);
+    EXPECT_EQ(code, http::server::Response::StatusCode::no_content);
+    code = res.getStatusCode(300);
+    EXPECT_EQ(code, http::server::Response::StatusCode::multiple_choices);
+    code = res.getStatusCode(301);
+    EXPECT_EQ(code, http::server::Response::StatusCode::moved_permanently);
+    code = res.getStatusCode(302);
+    EXPECT_EQ(code, http::server::Response::StatusCode::moved_temporarily);
+    code = res.getStatusCode(304);
+    EXPECT_EQ(code, http::server::Response::StatusCode::not_modified);
+    code = res.getStatusCode(400);
+    EXPECT_EQ(code, http::server::Response::StatusCode::bad_request);
+    code = res.getStatusCode(401);
+    EXPECT_EQ(code, http::server::Response::StatusCode::unauthorized);
+    code = res.getStatusCode(403);
+    EXPECT_EQ(code, http::server::Response::StatusCode::forbidden);
+    code = res.getStatusCode(404);
+    EXPECT_EQ(code, http::server::Response::StatusCode::not_found);
+    code = res.getStatusCode(500);
+    EXPECT_EQ(code, http::server::Response::StatusCode::internal_server_error);
+    code = res.getStatusCode(501);
+    EXPECT_EQ(code, http::server::Response::StatusCode::not_implemented);
+    code = res.getStatusCode(502);
+    EXPECT_EQ(code, http::server::Response::StatusCode::bad_gateway);
+    code = res.getStatusCode(503);
+    EXPECT_EQ(code, http::server::Response::StatusCode::service_unavailable);
+    code = res.getStatusCode(0);
+    EXPECT_EQ(code, http::server::Response::StatusCode::bad_request);
 }
 
 TEST_F(ResponseTest, TestgetStatus) {

@@ -65,8 +65,6 @@ namespace server {
                 return "302 Moved Temporarily\r\n";
             case  not_modified:
                 return "304 Not Modified\r\n";
-            case  bad_request:
-                return "400 Bad Request\r\n";
             case  unauthorized:
                 return "401 Unauthorized\r\n";
             case  forbidden:
