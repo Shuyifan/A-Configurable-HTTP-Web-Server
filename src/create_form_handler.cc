@@ -142,8 +142,10 @@ namespace server {
         ss << "</div>";
         if(update) {
             ss << "<input type=\"hidden\" name=\"update\" value=\"" << id << "\">";
+            ss << "<button type=\"submit\" class=\"btn btn-primary\">Update</button>";
+        } else {
+            ss << "<button type=\"submit\" class=\"btn btn-primary\">Create</button>";
         }
-        ss << "<button type=\"submit\" class=\"btn btn-primary\">Create</button>";
         ss << "</form>";
         ss << "</div>";   
         ss << "</body>";
