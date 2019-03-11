@@ -32,40 +32,26 @@ TEST_F(ListMemeHandlerTest, ResponseOK) {
 
 TEST_F(ListMemeHandlerTest, responseTest) {
     std::stringstream ss;
-    ss << "<!DOCTYPE html>";
-    ss << "<html lang=\"en\" dir=\"ltr\">";
-    ss << "<head>";
-    ss << "<meta charset=\"utf-8\">";
-    ss << "<title>Meme List</title>";
-    ss << "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">";
-    ss << "</head>";
-    ss << "<body>";
-    ss << "<div class=\"container\">";
-    ss << "<h2>The Meme List</h2>";
-    ss << "<form action=\"/meme/search\" method=\"get\">";
-    ss << "<div class=\"form-group\">";
-    ss << "<input type=\"text\" class=\"form-control\" name=\"q\" placeholder=\"Search\">";
-    ss << "</div>";
-    ss << "<button type=\"submit\" class=\"btn btn-primary\" value=\"Search\">Search</button>";
-    ss << "</form>";
-    ss << "<table class=\"table table-striped\">";
-    ss << "<thead>";
-    ss << "<tr>";
-    ss << "<th scope=\"col\">ID</th>";
-    ss << "<th scope=\"col\">Image </th>";
-    ss << "<th scope=\"col\">Top Text</th>";
-    ss << "<th scope=\"col\">Bottom Text</th>";
-    ss << "</tr>";
-    ss << "<tbody>";
-    ss << "<tr><th scope=\"row\">1</th><td>wings.jpg</td><td>id1_test</td><td>id1_test</td></tr>";
-    ss << "<tr><th scope=\"row\">2</th><td>psyduck.jpg</td><td>id2_test</td><td>id2_test</td></tr>";
-    ss << "<tr><th scope=\"row\">3</th><td>psyduck.jpg</td><td>id3_test</td><td>id3_test</td></tr>";
-    ss << "</tbody>";
-    ss << "</thead>";
-    ss << "</table>";
-    ss << "</div>";
-    ss << "</body>";
-    ss << "</html>";
+    ss << "<th scope=\"row\"><a href=\"view?id=1\">1</a></th>";
+    ss << "<td>wings.jpg</td>";
+    ss << "<td>id1_test</td>";
+    ss << "<td>id1_test</td>";
+
+    EXPECT_TRUE(resStr.find(ss.str()) != resStr.npos);
+
+    ss.str("");
+    ss << "<th scope=\"row\"><a href=\"view?id=2\">2</a></th>";
+    ss << "<td>psyduck.jpg</td>";
+    ss << "<td>id2_test</td>";
+    ss << "<td>id2_test</td>";
+
+    EXPECT_TRUE(resStr.find(ss.str()) != resStr.npos);
+
+    ss.str("");
+    ss << "<th scope=\"row\"><a href=\"view?id=3\">3</a></th>";
+    ss << "<td>psyduck.jpg</td>";
+    ss << "<td>id3_test</td>";
+    ss << "<td>id3_test</td>";
     
-    // EXPECT_EQ(response->getBody(), ss.str());
+    EXPECT_TRUE(resStr.find(ss.str()) != resStr.npos);
 }
