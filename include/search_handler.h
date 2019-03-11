@@ -22,7 +22,15 @@ public:
 private:
     std::string root_;
 
+	std::string search_key_;
+
+	std::string getSearchKey(const std::string uri);
+
 	std::string generateHTML(std::vector<std::string>& file_name);
+
+	std::vector<NginxConfig> search_results_;
+
+	void filterMeme(std::vector<std::string>& file_name);
 };
 }
 }
