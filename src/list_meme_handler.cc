@@ -89,7 +89,7 @@ namespace server {
         ss << "</head>";
         ss << "<body>";
         ss << "<div class=\"container\">";
-        ss << "<h2>The Meme List</h2>" << sort_by_;
+        ss << "<h2>The Meme List</h2>";
         ss << "<form action=\"/meme/search\" method=\"get\">";
         ss << "<div class=\"form-group\">";
         ss << "<input type=\"text\" class=\"form-control\" name=\"q\" placeholder=\"Search\">";
