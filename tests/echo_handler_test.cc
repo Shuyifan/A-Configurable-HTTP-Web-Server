@@ -1,23 +1,35 @@
-#include <string>
+#include <iostream>
+#include <sstream>
 #include "gtest/gtest.h"
-#include "request.h"
-#include "echo_handler.h"
+#include "handler_manager.h"
+#include "response.h"
 
 class EchoHandlerTest : public ::testing::Test {
   protected:
+    void SetUp() {
+        request_.method = "GET";
+        request_.uri = "/";
+        request_.http_version_major = 1;
+        request_.http_version_minor = 1;
+        parser.Parse("test.conf", &config);
+        manager = new http::server::HandlerManager(config);
+        handler = manager->createByUrl("/echo");
+        response = handler->HandlerRequest(request_);
+        resStr = response->ToString();
+    }
+
     http::server::request request_;
-    http::server::RequestHandler* requestHandler = new http::server::EchoHandler();
+    std::unique_ptr<http::server::RequestHandler> handler;
+    NginxConfig config;
+    NginxConfigParser parser;
+    http::server::HandlerManager* manager;
+    std::unique_ptr<http::server::Response> response;
+    std::string resStr;
 };
 
+
 TEST_F(EchoHandlerTest, EchoRequest_) {
-    std::unique_ptr<http::server::Response> response_;
-    request_.method = "GET";
-    request_.uri = "/";
-    request_.http_version_major = 1;
-    request_.http_version_minor = 1;
-    response_ = requestHandler->HandlerRequest(request_);
-    std::string res = response_->ToString();
-    EXPECT_EQ(res, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nGET / HTTP/1.1\r\n\r\n");
+    EXPECT_EQ(resStr, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nGET / HTTP/1.1\r\n\r\n");
 }
 
 
