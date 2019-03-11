@@ -104,13 +104,12 @@ fi
 
 #first start another instance of the server
 SECOND_PORT=12346
-PATH_TO_SECOND_CONFIG="proxy_test.conf"
+PATH_TO_SECOND_CONFIG="proxy/backend.conf"
 timeout 100  $PATH_FOR_SERVER $PATH_TO_SECOND_CONFIG  & > /dev/null 2> /dev/null
 SECOND_PID=$!
 
 #now issue a static file request for the proxied server
-echo "TODO -- delete dummy curl statement"
-curl -i http://localhost:$PORT/proxy/static/test.txt
+echo "proxy test"
 curl -sS http://localhost:$PORT/proxy/static/test.txt > $PATH_TO_PROXY_OUT
 cmp -n 20 -s $PATH_TO_PROXY_OUT $PATH_TO_STATIC_EXPECT
 current=$?
