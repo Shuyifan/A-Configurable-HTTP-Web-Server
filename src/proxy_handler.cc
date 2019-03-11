@@ -17,6 +17,7 @@ namespace server {
 
     std::unique_ptr<Response> ProxyHandler::HandlerRequest(const request& request) {
         std::unique_ptr<Response> response_ (new Response);
+        response_->SetVersion("1.1");
 
         boost::asio::io_service io_service;
 
