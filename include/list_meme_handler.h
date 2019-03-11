@@ -22,7 +22,15 @@ public:
 private:
     std::string root_;
 
+	std::vector<NginxConfig> search_results_;
+
 	std::string generateHTML(std::vector<std::string>& file_name);
+
+	std::string sort_by_;
+
+	void filterMeme(std::vector<std::string>& file_name);
+
+	std::string getSortKey(const std::string uri);
 };
 }
 }

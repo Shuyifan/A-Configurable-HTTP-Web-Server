@@ -22,6 +22,7 @@ namespace server {
 
     std::unique_ptr<http::server::Response> SearchHandler::HandlerRequest(const request& request) {
 
+        sort_by_ = getSortKey(request.uri);
         search_key_ = getSearchKey(request.uri);
 
         std::vector<std::string> file_name;
@@ -48,7 +49,22 @@ namespace server {
 
     std::string SearchHandler::getSearchKey(const std::string uri) {
         int start = uri.find("q=") + 2;
-        int end = uri.size();
+        int end = start + 1;
+        while(end < uri.size() && uri[end] != '?') {
+            end++;
+        }
+        return uri.substr(start, end - start);
+    }
+
+    std::string SearchHandler::getSortKey(const std::string uri) {
+        if(uri.find("sort=") == std::string::npos) {
+            return "id";
+        }
+        int start = uri.find("sort=") + 5;
+        int end = start + 1;
+        while(end < uri.size() && uri[end] != '?') {
+            end++;
+        }
         return uri.substr(start, end - start);
     }
 
@@ -66,6 +82,15 @@ namespace server {
                     }
                 }
             }
+        }
+        if(sort_by_ == "id") {
+            std::sort(search_results_.begin(), search_results_.end(), id_compare);
+        } else if(sort_by_ == "image") {
+            std::sort(search_results_.begin(), search_results_.end(), image_compare);
+        } else if(sort_by_ == "top") {
+            std::sort(search_results_.begin(), search_results_.end(), top_compare);
+        } else if(sort_by_ == "bottom") {
+            std::sort(search_results_.begin(), search_results_.end(), bottom_compare);
         }
     }
 
@@ -94,13 +119,12 @@ namespace server {
             ss << "<table class=\"table table-striped\">";
             ss << "<thead>";
             ss << "<tr>";
-            ss << "<th scope=\"col\">ID</th>";
-            ss << "<th scope=\"col\">Image </th>";
-            ss << "<th scope=\"col\">Top Text</th>";
-            ss << "<th scope=\"col\">Bottom Text</th>";
+            ss << "<th scope=\"col\"><a href=\"?sort=id?q=" << search_key_ << "\">ID</th>";
+            ss << "<th scope=\"col\"><a href=\"?sort=image?q=" << search_key_ << "\">Image </th>";
+            ss << "<th scope=\"col\"><a href=\"?sort=top?q=" << search_key_ << "\">Top Text</th>";
+            ss << "<th scope=\"col\"><a href=\"?sort=bottom?q=" << search_key_ << "\">Bottom Text</th>";
             ss << "</tr>";
             ss << "<tbody>";
-            NginxConfigParser config_parser;
             for(auto const& result: search_results_) {
                 ss << "<tr>";
                 for(const auto& statement : result.statements_) {

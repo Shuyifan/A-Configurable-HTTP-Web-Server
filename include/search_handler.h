@@ -24,7 +24,11 @@ private:
 
 	std::string search_key_;
 
+	std::string sort_by_;
+
 	std::string getSearchKey(const std::string uri);
+
+	std::string getSortKey(const std::string uri);
 
 	std::string generateHTML(std::vector<std::string>& file_name);
 

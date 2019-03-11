@@ -58,3 +58,27 @@ class NginxConfigParser {
 
   TokenType ParseToken(std::istream* input, std::string* value);
 };
+
+struct {
+  bool operator()(NginxConfig& a, NginxConfig& b) const {   
+    return a.statements_[0]->tokens_[1].compare(b.statements_[0]->tokens_[1]) <= 0;
+  }   
+} id_compare;
+
+struct {
+  bool operator()(NginxConfig& a, NginxConfig& b) const {   
+    return a.statements_[1]->tokens_[1].compare(b.statements_[1]->tokens_[1]) <= 0;
+  }   
+} image_compare;
+
+struct {
+  bool operator()(NginxConfig& a, NginxConfig& b) const {   
+    return a.statements_[2]->tokens_[1].compare(b.statements_[2]->tokens_[1]) <= 0;
+  }   
+} top_compare;
+
+struct {
+  bool operator()(NginxConfig& a, NginxConfig& b) const {   
+    return a.statements_[3]->tokens_[1].compare(b.statements_[3]->tokens_[1]) <= 0;
+  }   
+} bottom_compare;

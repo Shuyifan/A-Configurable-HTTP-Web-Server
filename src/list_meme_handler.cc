@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 
 #include "config_parser.h"
 #include "utils.h"
@@ -23,13 +24,17 @@ namespace server {
 
     std::unique_ptr<http::server::Response> ListMemeHandler::HandlerRequest(const request& request) {
 
+        sort_by_ = getSortKey(request.uri);
+
         std::vector<std::string> file_name;
         find_files_in_folder(get_server_dir() + root_, file_name);
 
         std::unique_ptr<Response> response_ (new Response);
         response_->SetVersion("1.1");
 
+        filterMeme(file_name);
         std::string content = generateHTML(file_name);
+
         response_->AddHeader("Content-Length", std::to_string(content.size()));
         response_->AddHeader("Content-type", mime_types::extension_to_type("html"));
         
@@ -43,6 +48,36 @@ namespace server {
         return response_;
     }
 
+    void ListMemeHandler::filterMeme(std::vector<std::string>& file_name) {
+        NginxConfigParser config_parser;
+        for(auto const& file: file_name) {
+            NginxConfig config;
+            config_parser.Parse(file.c_str(), &config);
+            search_results_.push_back(config);
+        }
+        if(sort_by_ == "id") {
+            std::sort(search_results_.begin(), search_results_.end(), id_compare);
+        } else if(sort_by_ == "image") {
+            std::sort(search_results_.begin(), search_results_.end(), image_compare);
+        } else if(sort_by_ == "top") {
+            std::sort(search_results_.begin(), search_results_.end(), top_compare);
+        } else if(sort_by_ == "bottom") {
+            std::sort(search_results_.begin(), search_results_.end(), bottom_compare);
+        }
+    }
+
+    std::string ListMemeHandler::getSortKey(const std::string uri) {
+        if(uri.find("sort=") == std::string::npos) {
+            return "id";
+        }
+        int start = uri.find("sort=") + 5;
+        int end = start + 1;
+        while(end < uri.size() && uri[end] != '?') {
+            end++;
+        }
+        return uri.substr(start, end - start);
+    }
+
     std::string ListMemeHandler::generateHTML(std::vector<std::string>& file_name) {
         std::stringstream ss;
         ss << "<!DOCTYPE html>";
@@ -54,7 +89,7 @@ namespace server {
         ss << "</head>";
         ss << "<body>";
         ss << "<div class=\"container\">";
-        ss << "<h2>The Meme List</h2>";
+        ss << "<h2>The Meme List</h2>" << sort_by_;
         ss << "<form action=\"/meme/search\" method=\"get\">";
         ss << "<div class=\"form-group\">";
         ss << "<input type=\"text\" class=\"form-control\" name=\"q\" placeholder=\"Search\">";
@@ -64,19 +99,15 @@ namespace server {
         ss << "<table class=\"table table-striped\">";
         ss << "<thead>";
         ss << "<tr>";
-        ss << "<th scope=\"col\">ID</th>";
-        ss << "<th scope=\"col\">Image </th>";
-        ss << "<th scope=\"col\">Top Text</th>";
-        ss << "<th scope=\"col\">Bottom Text</th>";
+        ss << "<th scope=\"col\"><a href=\"?sort=id\">ID</th>";
+        ss << "<th scope=\"col\"><a href=\"?sort=image\">Image </th>";
+        ss << "<th scope=\"col\"><a href=\"?sort=top\">Top Text</th>";
+        ss << "<th scope=\"col\"><a href=\"?sort=bottom\">Bottom Text</th>";
         ss << "</tr>";
         ss << "<tbody>";
-        
-        NginxConfigParser config_parser;
-        for(auto const& file: file_name) {
-            NginxConfig config;
-            config_parser.Parse(file.c_str(), &config);
+        for(auto const& result: search_results_) {
             ss << "<tr>";
-            for(const auto& statement : config.statements_) {
+            for(const auto& statement : result.statements_) {
                 const std::vector<std::string> tokens = statement->tokens_;
                 std::string decoded_text;
                 url_decode(tokens[1], decoded_text);
@@ -89,7 +120,6 @@ namespace server {
             }
             ss << "</tr>";
         }
-        
         ss << "</tbody>";
         ss << "</thead>";
         ss << "</table>";
