@@ -5,13 +5,13 @@
 
 #include "config_parser.h"
 #include "utils.h"
-#include "list_meme_handler.h"
+#include "search_handler.h"
 #include <boost/filesystem.hpp>
 
 namespace http {
 namespace server {
-    http::server::RequestHandler* ListMemeHandler::create(const NginxConfig& config, const std::string& root_path) {
-        http::server::ListMemeHandler* handler = new http::server::ListMemeHandler();
+    http::server::RequestHandler* SearchHandler::create(const NginxConfig& config, const std::string& root_path) {
+        http::server::SearchHandler* handler = new http::server::SearchHandler();
         for(const auto& statement : config.statements_) {
 			const std::vector<std::string> tokens = statement->tokens_;
 			if(tokens[0] == "root") {
@@ -21,7 +21,7 @@ namespace server {
         return handler;
     }
 
-    std::unique_ptr<http::server::Response> ListMemeHandler::HandlerRequest(const request& request) {
+    std::unique_ptr<http::server::Response> SearchHandler::HandlerRequest(const request& request) {
 
         std::vector<std::string> file_name;
         find_files_in_folder(get_server_dir() + root_, file_name);
@@ -43,7 +43,7 @@ namespace server {
         return response_;
     }
 
-    std::string ListMemeHandler::generateHTML(std::vector<std::string>& file_name) {
+    std::string SearchHandler::generateHTML(std::vector<std::string>& file_name) {
         std::stringstream ss;
         ss << "<!DOCTYPE html>";
         ss << "<html lang=\"en\" dir=\"ltr\">";
@@ -55,7 +55,7 @@ namespace server {
         ss << "<body>";
         ss << "<div class=\"container\">";
         ss << "<h2>The Meme List</h2>";
-        ss << "<form action=\"/meme/search\" method=\"get\">";
+        ss << "<form method=\"get\">";
         ss << "<div class=\"form-group\">";
         ss << "<input type=\"text\" class=\"form-control\" name=\"q\" placeholder=\"Search\">";
         ss << "</div>";

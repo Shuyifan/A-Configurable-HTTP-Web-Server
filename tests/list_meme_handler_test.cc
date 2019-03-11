@@ -42,6 +42,12 @@ TEST_F(ListMemeHandlerTest, responseTest) {
     ss << "<body>";
     ss << "<div class=\"container\">";
     ss << "<h2>The Meme List</h2>";
+    ss << "<form action=\"/meme/search\" method=\"get\">";
+    ss << "<div class=\"form-group\">";
+    ss << "<input type=\"text\" class=\"form-control\" name=\"q\" placeholder=\"Search\">";
+    ss << "</div>";
+    ss << "<button type=\"submit\" class=\"btn btn-primary\" value=\"Search\">Search</button>";
+    ss << "</form>";
     ss << "<table class=\"table table-striped\">";
     ss << "<thead>";
     ss << "<tr>";

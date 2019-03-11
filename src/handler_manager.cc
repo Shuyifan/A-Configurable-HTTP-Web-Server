@@ -57,16 +57,19 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
     } else if(name == "delete") {
         handler.reset(http::server::DeleteHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Delete Handler called";
+    } else if(name == "search") {
+        handler.reset(http::server::SearchHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "search Handler called";
     } else if(name == "health") {
         handler.reset(http::server::HealthHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
-    }else if(name == "default") {
+    } else if(name == "default") {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Default Handler called";
     } else if(name == "bad") {
         handler.reset(http::server::BadRequestHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Bad Request Handler called";
-    }else {
+    } else {
         
         handler.reset(http::server::ErrorHandler::create(config, root_path));
     }
