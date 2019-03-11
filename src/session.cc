@@ -49,7 +49,7 @@ void session::handle_read(const boost::system::error_code &error,
 
             std::unique_ptr<http::server::Response> resp =
                 requestHandler->HandlerRequest(request_);
-            BOOST_LOG_TRIVIAL(info) << "responscode:" << resp->GetStatus() << "|" << "::ResponseMetrics::";
+            BOOST_LOG_TRIVIAL(info) << "responscode : " << resp->GetStatus() << "|" << "::ResponseMetrics::";
             http::server::HandlerManager::addCount();
             http::server::HandlerManager::addReqResp(request_.uri, resp->getStatusLine());
 
@@ -63,7 +63,7 @@ void session::handle_read(const boost::system::error_code &error,
         } else {
             http::server::BadRequestHandler* handler  = new http::server::BadRequestHandler();
             std::unique_ptr<http::server::Response> resp = handler->HandlerRequest(request_);
-            BOOST_LOG_TRIVIAL(info) << "responscode:" << resp->GetStatus() << "|" << "::ResponseMetrics::";
+            BOOST_LOG_TRIVIAL(info) << "responscode : " << resp->GetStatus() << "|" << "::ResponseMetrics::";
             request_.clear();
             BOOST_LOG_TRIVIAL(warning) << "Invalid request";
             BOOST_LOG_TRIVIAL(info) << data_;
