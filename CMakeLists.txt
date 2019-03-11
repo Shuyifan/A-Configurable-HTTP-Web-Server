@@ -55,7 +55,7 @@ add_executable(test_all tests/config_parser_test.cc tests/server_test.cc tests/s
                         tests/view_meme_handler_test.cc tests/list_meme_handler_test.cc tests/delete_handler_test.cc
                         tests/health_handler_test.cc tests/bad_request_handler_test.cc tests/default_handler_test.cc
                         tests/handler_manager_test.cc  tests/response_test.cc tests/mime_types_test.cc tests/utils_test.cc
-                        tests/proxy_handler_test.cc)
+                        tests/proxy_handler_test.cc tests/status_handler_test.cc)
 #add_executable(config_parser_test tests/config_parser_test.cc)
 #add_executable(session_test tests/session_test.cc)
 #add_executable(request_parser_test tests/request_parser_test.cc)
