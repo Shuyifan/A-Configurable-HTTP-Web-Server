@@ -42,7 +42,7 @@ add_library(server_lib src/server.cc src/session.cc src/config_parser.cc src/req
                         src/view_meme_handler src/list_meme_handler.cc src/delete_handler.cc 
                         src/health_handler.cc src/bad_request_handler.cc src/default_handler.cc
                         src/response.cc src/handler_manager.cc src/utils.cc src/mime_types.cc
-                        src/search_handler.cc)
+                        src/search_handler.cc src/proxy_handler.cc)
 
 # TODO(!): Update executable name, srcs, and deps
 add_executable(server src/server_main.cc)

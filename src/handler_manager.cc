@@ -62,7 +62,10 @@ std::unique_ptr<http::server::RequestHandler> HandlerManager::createByName(const
         BOOST_LOG_TRIVIAL(info) << "search Handler called";
     } else if(name == "health") {
         handler.reset(http::server::HealthHandler::create(config, root_path));
-        BOOST_LOG_TRIVIAL(info) << "listMeme Handler called";
+        BOOST_LOG_TRIVIAL(info) << "Health Handler called";
+    } else if(name == "proxy") {
+        handler.reset(http::server::ProxyHandler::create(config, root_path));
+        BOOST_LOG_TRIVIAL(info) << "Proxy Handler called";
     } else if(name == "default") {
         handler.reset(http::server::DefaultHandler::create(config, root_path));
         BOOST_LOG_TRIVIAL(info) << "Default Handler called";

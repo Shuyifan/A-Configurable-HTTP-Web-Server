@@ -19,6 +19,8 @@
 #include "health_handler.h"
 #include "bad_request_handler.h"
 #include "search_handler.h"
+#include "proxy_handler.h"
+
 namespace http {
 namespace server {
 
