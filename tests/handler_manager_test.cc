@@ -9,6 +9,9 @@
 #include "error_handler.h"
 #include "default_handler.h"
 #include "health_handler.h"
+#include "bad_request_handler.h"
+#include "proxy_handler.h"
+#include "search_handler.h"
 class HandlerManagerTest : public ::testing::Test {
 protected:
     NginxConfigParser config_parser;
@@ -60,6 +63,18 @@ TEST_F(HandlerManagerTest, createByNameTest) {
 
 	temp_ptr = handler_manager.createByName("listMeme", emptyConfig, "");
 	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ListMemeHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("bad", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::BadRequestHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("health", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::HealthHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("proxy", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::ProxyHandler::create(emptyConfig, ""))));
+
+	temp_ptr = handler_manager.createByName("search", emptyConfig, "");
+	EXPECT_EQ(typeid(*temp_ptr), typeid(*(http::server::SearchHandler::create(emptyConfig, ""))));
 }
 
 TEST_F(HandlerManagerTest, createByUrlTest) {
