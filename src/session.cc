@@ -5,12 +5,8 @@
 #include <boost/log/trivial.hpp>
 
 #include "session.h"
-#include "echo_handler.h"
-#include "static_handler.h"
-#include "default_handler.h"
 #include "handler_manager.h"
 #include "response.h"
-#include "bad_request_handler.h"
 using boost::asio::ip::tcp;
 
 session::session(boost::asio::io_service& io_service, 

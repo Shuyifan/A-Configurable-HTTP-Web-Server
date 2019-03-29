@@ -3,23 +3,23 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "request_handler.h"
-#include "static_handler.h"
-#include "echo_handler.h"
-#include "default_handler.h"
-#include "error_handler.h"
-#include "status_handler.h"
-#include "create_form_handler.h"
-#include "view_meme_handler.h"
-#include "list_meme_handler.h"
-#include "accept_handler.h"
-#include "delete_handler.h"
 #include "config_parser.h"
 #include "handler_parameter.h"
-#include "health_handler.h"
-#include "bad_request_handler.h"
-#include "search_handler.h"
-#include "proxy_handler.h"
+#include "handler/request_handler.h"
+#include "handler/static_handler.h"
+#include "handler/echo_handler.h"
+#include "handler/default_handler.h"
+#include "handler/error_handler.h"
+#include "handler/status_handler.h"
+#include "handler/create_form_handler.h"
+#include "handler/view_meme_handler.h"
+#include "handler/list_meme_handler.h"
+#include "handler/accept_handler.h"
+#include "handler/delete_handler.h"
+#include "handler/health_handler.h"
+#include "handler/bad_request_handler.h"
+#include "handler/search_handler.h"
+#include "handler/proxy_handler.h"
 
 namespace http {
 namespace server {

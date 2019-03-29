@@ -1,4 +1,4 @@
-#include "request_handler.h"
+#include "handler/request_handler.h"
 #include "request.h"
 #include "header.h"
 #include "mime_types.h"
@@ -6,19 +6,21 @@
 
 namespace http {
 namespace server {
-class ViewMemeHandler : public RequestHandler {
-public:
+class AcceptHandler : public RequestHandler {
+public:	
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 
 	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;
 
     void setDir(std::string dir);
+    void setRootDir(std::string dir);
 
 private:
-    int getID(const std::string uri);
-    std::string generateHTML(int id);
-    std::string dir_;
+    std::string generateHTML(bool update, int id);
+    void saveToFile(const std::string data, int id);
+    std::string fileDir_;
+    std::string rootDir_;
 };
 }
 }

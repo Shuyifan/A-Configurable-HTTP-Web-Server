@@ -6,7 +6,7 @@
 #include <boost/asio.hpp>
 #include "gtest/gtest.h"
 #include "request.h"
-#include "static_handler.h"
+#include "handler/static_handler.h"
 #include "config_parser.h"
 #include "utils.h"
 #include "handler_manager.h"

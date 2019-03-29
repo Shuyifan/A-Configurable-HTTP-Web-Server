@@ -6,7 +6,7 @@
 
 #include "config_parser.h"
 #include "utils.h"
-#include "list_meme_handler.h"
+#include "handler/list_meme_handler.h"
 #include <boost/filesystem.hpp>
 
 namespace http {

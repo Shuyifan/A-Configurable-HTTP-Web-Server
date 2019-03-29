@@ -2,7 +2,7 @@
 #include <boost/log/trivial.hpp>
 #include <sstream>
 
-#include "proxy_handler.h"
+#include "handler/proxy_handler.h"
 #include "mime_types.h"
 
 using boost::asio::ip::tcp;

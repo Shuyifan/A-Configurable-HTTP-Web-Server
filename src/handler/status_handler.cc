@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include "config_parser.h"
-#include "status_handler.h"
+#include "handler/status_handler.h"
 #include "handler_manager.h"
 
 namespace http {

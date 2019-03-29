@@ -1,18 +1,18 @@
 #pragma once
-#include "request_handler.h"
+#include "handler/request_handler.h"
 #include "request.h"
 #include "header.h"
 #include "config_parser.h"
 
 namespace http {
 namespace server {
-class DefaultHandler : public RequestHandler {
+class EchoHandler : public RequestHandler {
 public:
 
 	/**
 	Create a echo handler according to the config file and root path.
 	@param  NgixnConfig file and root path
-	@return RequestHandler object that contains default handler
+	@return RequestHandler object that contains echo handler
 	*/
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);

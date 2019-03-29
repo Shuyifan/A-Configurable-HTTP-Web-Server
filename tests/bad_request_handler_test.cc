@@ -1,7 +1,7 @@
 #include <string>
 #include "gtest/gtest.h"
 #include "request.h"
-#include "bad_request_handler.h"
+#include "handler/bad_request_handler.h"
 
 class BadRequestHandlerTest : public ::testing::Test {
   protected:

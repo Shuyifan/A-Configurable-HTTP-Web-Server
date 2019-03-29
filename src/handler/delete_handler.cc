@@ -1,7 +1,7 @@
 #include <sstream>
 
 #include <boost/filesystem.hpp>
-#include "delete_handler.h"
+#include "handler/delete_handler.h"
 #include "utils.h"
 
 namespace http {

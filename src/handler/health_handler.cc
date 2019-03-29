@@ -5,7 +5,7 @@
 
 #include "config_parser.h"
 #include "utils.h"
-#include "health_handler.h"
+#include "handler/health_handler.h"
 #include <boost/filesystem.hpp>
 
 namespace http {

@@ -1,7 +1,7 @@
 #include <string>
 #include "gtest/gtest.h"
 #include "request.h"
-#include "error_handler.h"
+#include "handler/error_handler.h"
 
 class ErrorHandlerTest : public ::testing::Test {
   protected:

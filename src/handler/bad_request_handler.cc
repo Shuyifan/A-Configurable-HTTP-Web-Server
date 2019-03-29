@@ -2,7 +2,7 @@
 #include <sstream>
 #include <memory>
 
-#include "bad_request_handler.h"
+#include "handler/bad_request_handler.h"
 
 namespace http {
 namespace server {

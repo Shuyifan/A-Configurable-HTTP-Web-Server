@@ -6,7 +6,7 @@
 
 #include <boost/filesystem.hpp>
 #include "utils.h"
-#include "view_meme_handler.h"
+#include "handler/view_meme_handler.h"
 namespace http {
 namespace server {
     RequestHandler* ViewMemeHandler::create(const NginxConfig& config, 

@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "utils.h"
-#include "search_handler.h"
+#include "handler/search_handler.h"
 #include <boost/filesystem.hpp>
 
 namespace http {

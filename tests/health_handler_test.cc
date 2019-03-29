@@ -1,7 +1,7 @@
 #include <string>
 #include "gtest/gtest.h"
 #include "request.h"
-#include "health_handler.h"
+#include "handler/health_handler.h"
 
 class HealthHandlerTest : public ::testing::Test {
   protected:
