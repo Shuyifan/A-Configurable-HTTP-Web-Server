@@ -35,7 +35,7 @@ message(STATUS "Boost version: ${Boost_VERSION}")
 
 include_directories(include)
 
-# TODO(!): Update name and srcs
+# Update name and srcs
 add_library(server_lib src/server.cc src/session.cc src/config_parser.cc src/request_parser.cc
                         src/handler/echo_handler.cc src/handler/error_handler.cc src/handler/static_handler.cc
                         src/handler/status_handler.cc src/handler/create_form_handler.cc src/handler/accept_handler.cc
@@ -44,33 +44,26 @@ add_library(server_lib src/server.cc src/session.cc src/config_parser.cc src/req
                         src/response.cc src/handler_manager.cc src/utils.cc src/mime_types.cc
                         src/handler/search_handler.cc src/handler/proxy_handler.cc)
 
-# TODO(!): Update executable name, srcs, and deps
+# Update executable name, srcs, and deps
 add_executable(server src/server_main.cc)
 target_link_libraries(server server_lib Boost::system Boost::log_setup Boost::log Boost::signals)
 
 # TODO(!): Update test executable name, srcs, and deps
-add_executable(test_all tests/config_parser_test.cc tests/server_test.cc tests/session_test.cc
-                        tests/request_parser_test.cc tests/echo_handler_test.cc tests/error_handler_test.cc 
-                        tests/static_handler_test.cc tests/create_form_handler_test tests/accept_handler_test.cc
-                        tests/view_meme_handler_test.cc tests/list_meme_handler_test.cc tests/delete_handler_test.cc
-                        tests/health_handler_test.cc tests/bad_request_handler_test.cc tests/default_handler_test.cc
-                        tests/handler_manager_test.cc  tests/response_test.cc tests/mime_types_test.cc tests/utils_test.cc
-                        tests/proxy_handler_test.cc tests/status_handler_test.cc tests/search_handler_test.cc)
-#add_executable(config_parser_test tests/config_parser_test.cc)
-#add_executable(session_test tests/session_test.cc)
-#add_executable(request_parser_test tests/request_parser_test.cc)
+add_executable(test_all tests/config_parser_test.cc tests/server_test.cc tests/request_parser_test.cc
+                        tests/echo_handler_test.cc tests/error_handler_test.cc tests/static_handler_test.cc 
+                        tests/create_form_handler_test tests/accept_handler_test.cc tests/view_meme_handler_test.cc 
+                        tests/list_meme_handler_test.cc tests/delete_handler_test.cc tests/health_handler_test.cc 
+                        tests/bad_request_handler_test.cc tests/default_handler_test.cc tests/handler_manager_test.cc  
+                        tests/response_test.cc tests/mime_types_test.cc tests/utils_test.cc tests/proxy_handler_test.cc 
+                        tests/status_handler_test.cc tests/search_handler_test.cc)
+
 target_link_libraries(test_all server_lib gtest_main Boost::system Boost::log_setup Boost::log Boost::signals)
-#target_link_libraries(config_parser_test server_lib gtest_main)
-#target_link_libraries(session_test server_lib gtest_main Boost::system)
-#target_link_libraries(request_parser_test server_lib gtest_main Boost::system)
 
-# TODO(!): Update with test binary
+# Update with test binary
 gtest_discover_tests(test_all WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-#gtest_discover_tests(config_parser_test session_test request_parser_test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
-# TODO(!): Update with target/test targets
+# Update with target/test targets
 include(cmake/CodeCoverageReportConfig.cmake)
 generate_coverage_report(TARGETS server server_lib TESTS test_all)
-#generate_coverage_report(TARGETS server server_lib TESTS config_parser_test session_test request_parser_test)
 
 add_test(NAME IntegrationTest COMMAND intergration_test.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)

@@ -18,7 +18,6 @@ public:
 	@param  request object
 	@return response object
 	*/
-	//virtual bool handleRequest(const request& req, std::string& response) = 0;
 
 	virtual std::unique_ptr<http::server::Response> HandlerRequest(const request& request) = 0;
 

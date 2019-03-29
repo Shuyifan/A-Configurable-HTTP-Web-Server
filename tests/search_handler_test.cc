@@ -33,9 +33,5 @@ TEST_F(SearchHandlerTest, ResponseOK) {
 TEST_F(SearchHandlerTest, responseTest) {
     std::stringstream ss;
     ss << "";
-    // ss << "<th scope=\"row\"><a href=\"view?id=1\">1</a></th>";
-    // ss << "<td>wings.jpg</td>";
-    // ss << "<td>id1_test</td>";
-    // ss << "<td>id1_test</td>";
     EXPECT_TRUE(resStr.find(ss.str()) != resStr.npos);
 }

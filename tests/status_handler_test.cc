@@ -89,7 +89,7 @@ TEST_F(StatusHandlerTest, multiRequestTest) {
 
    socket3.read_some(boost::asio::buffer(respond));
    s = respond;
-   std::cout<<s << std::endl;
+
    EXPECT_TRUE(s.find("Number of requests the server receives: </h3>2<h3>") != std::string::npos);
    EXPECT_TRUE(s.find("<tr><tr><td>/static/test.txt</td><td>HTTP/1.1 200 OK") != std::string::npos);
    EXPECT_TRUE(s.find("</tr><tr><td>/static/test.jpg</td><td>HTTP/1.1 200 OK") != std::string::npos);

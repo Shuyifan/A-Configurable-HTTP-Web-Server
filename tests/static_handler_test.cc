@@ -41,22 +41,3 @@ class StaticHandlerTest : public ::testing::Test {
 TEST_F(StaticHandlerTest, BadRequest) {
     EXPECT_EQ(resStr, "HTTP/1.1 400 Bad Request\r\n\r\n");
 }
-
-// TEST_F(StaticHandlerTest, NotFound) {
-//     std::unique_ptr<http::server::Response> response_;
-//     request_.method = "GET";
-//     request_.uri = "/static/empty.txt/";
-//     request_.http_version_major = 1;
-//     request_.http_version_minor = 1;
-//     response_ = requestHandler->HandlerRequest(request_);
-//     std::string res = response_->ToString();
-//     EXPECT_EQ(res, "HTTP/1.1 404 Not Found\r\n\r\nFile Not Exist!");
-// }
-
-// TEST_F(StaticHandlerTest, NotFound) {
-//     request_.method = "GET";
-//     request_.uri = "/static/empty.txt/";
-//     request_.http_version_major = 1;
-//     request_.http_version_minor = 1;
-//     EXPECT_EQ(resStr, "HTTP/1.1 404 Not Found\r\n\r\nFile Not Exist!");
-// }
