@@ -7,7 +7,7 @@
 namespace http {
 namespace server {
 /**
- * A handler to deal with actually create the meme, and storing them into locals.
+ * A handler to deal with actually creating the meme, and storing them into locals.
 */
 class AcceptHandler : public RequestHandler {
 public:	

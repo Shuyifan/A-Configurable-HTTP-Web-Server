@@ -1,39 +1,78 @@
-# cracking-the-web
-Our poject is a webserver which can handle echo, static file,and other ruquest in c++
-## A typical top-level directory layout
-
-    .
-    ├── build                   # Compiled files (alternatively `dist`)
-    ├── conf                    # deploy.conf file is inside
-    ├── docker                  # Docker information
-    ├── files                   # Contains Static files inside the folder
-    ├── include                 # Contains all the header files
-    ├── src                     # Contains all .cc files
-    ├── test                    # Contains unit tests and integration test
-    └── README.md
-## Information about header file
+# A-Configurable-HTTP-Web-Server
+Our poject is a configurable webserver which can handle echo, static file,and other ruquest in c++.
+## Contributor
+Chengshun Zhang<br> 
+Yifan Shu<br> 
+Yuqing Wang<br> 
+Nelly Lyu<br> 
+## Project Structure
+#### A typical top-level directory layout
+    .   
+    ├── cmake                           # CMake config file for generating coverage report
+    ├── conf                            # deploy.conf file is inside
+    ├── docker                          # Docker information
+    ├── environment                     # The environment for the project
+    ├── files                           # Contains static files inside the folder
+    ├── include                         # Contains all the header files
+    ├── src                             # Contains all source files
+    ├── tests                           # Contains unit tests and integration test
+    ├── README.md                       # Readme file
+    └── CMakeList.txt                   # CMake config file
+    └── CMakeList.txt                   # CMake config file
+    
+#### Information about header file
     .
     ├── ...
-    ├── include                 # Contains all the header files
-    │   ├── config_parser.h     # Take a opened config file or file name and store the parsed config in the provided NginxConfig out-param
-    │   ├── request_handler.h   # Interface class of all the handler
-    │   ├── default_handler.h   # Handle the request to main page
-    │   ├── echo_handler.h      # Handle the echo request
-    │   ├── handler_manager.h   # Prepare the correct request handler
-    │   ├── handler_parameter.h # Contains directory and log as well as handler name and config
-    │   ├── header.h            # Contains string called name and value
-    │   ├── mime_types.h        # Convert a file extension into a MIME type.
-    │   ├── request_parser.h    # Parse the request
-    │   ├── request.h           # Request object
-    │   ├── response.h          # Response object
-    │   ├── server.h            # For server
-    │   ├── session.h           # For session
-    │   └── utils.h             # Get the correct directory
+    ├── include                         # Contains all the header files
+    │   ├── handler                     # Contains all the handler's header files
+    │   │   ├── accept_handler.h        # A handler to deal with actually creating the meme, and storing them into locals
+    │   │   ├── bad_request_handler.h   # A handler to deal with error request
+    │   │   ├── create_form_handler.h   # A handler to deal with creating a meme
+    │   │   ├── default_handler.h       # Handle the request to main page
+    │   │   ├── delete_handler.h        # A handler deals with deleting a spcific generated meme
+    │   │   ├── echo_handler.h          # Handle the echo request
+    │   │   ├── error_handler.h         # A handler to deal with error request
+    │   │   ├── health_handler.h        # A handler to detect whether the server is working properly
+    │   │   ├── list_meme_handler.h     # A handler deals with listing all the generated memes
+    │   │   ├── proxy_handler.h         # A handler to deal with reverse proxy
+    │   │   ├── request_handler.h       # Interface class of all the handler
+    │   │   ├── search_handler.h        # A handler deals with searching the generated memes
+    │   │   ├── static_handler.h        # A handler deals with serving the static files
+    │   │   ├── status_handler.h        # A handler deals with providing the status information about the server
+    │   │   └── view_meme_handler.h     # A handler deals with view the generated meme
+    │   ├── config_parser.h             # Take a opened config file or file name and store the parsed config in the provided NginxConfig out-param
+    │   ├── handler_manager.h           # A manager class to server correct request handler
+    │   ├── handler_parameter.h         # Contains directory and log as well as handler name and config
+    │   ├── header.h                    # Headers object for the HTTP protocols
+    │   ├── mime_types.h                # Convert a file extension into a MIME type.
+    │   ├── request_parser.h            # Parse the request
+    │   ├── request.h                   # Request object
+    │   ├── response.h                  # Response object
+    │   ├── server.h                    # For server
+    │   ├── session.h                   # For session
+    │   └── utils.h                     # Contains all the utility functions
     └── ...
 ## Getting Started
-#### Installing 
+#### Setting up the development environment
+The requirement for the development environment for this project can be shown as follows:
+* Boost C++ Libraries
+* Clang
+* CMake
+* Docker
+* Google Cloud SDK
+* Google Test
+* Git 
+* git-review
+* LLDB 
+
+To install all the package, we use docker to configuarate our development. [Docker](https://www.docker.com/) should be installed first. The installation tutorial can be seen here: https://docs.docker.com/install/.<br> 
+After installing the docker, the environment can be simply set up through the following command line:
 ```
- git clone ssh://${username}@code.cs130.org:29418/cracking-the-web.git
+environment/env/start.sh -u ${USER} -n
+```
+#### Clone the repository
+```
+git clone https://github.com/Shuyifan/A-Configurable-HTTP-Web-Server.git
 ```
 #### Build locally
 First change the conf/deploy.conf listen 80 to listen 8080
@@ -44,17 +83,21 @@ make
 make test
 ```
 #### Docker Build
+A code coverage build of a binary includes extra code to generate output files showing which lines and branches were executed. To generate code coverage reports for the CMakeLists.txt generated from our project templates:
 ```
-tools/env/start.sh -u ${username}
+environment/env/start.sh -u ${username}
 cd cracking-the-web
 ./temp.sh 
 docker run --rm -p 127.0.0.1:8080:8080 --name my_run my_image:latest
 ```
-#### Checking Website
--Main page:<a href="http://localhost:8080/" target="_blank">Here</a>.
--Static index:<a href="http://localhost:8080/static/index.html" target="_blank">Here</a>.
--Echo:<a href="http://localhost:8080/echos" target="_blank">Here</a>.
-
+This will create an HTML report in ${REPO}/build_coverage/report/index.html that you can view in your browser.
+#### Testing and get the coverage report
+```
+mkdir build_coverage
+cd build_coverage
+cmake -DCMAKE_BUILD_TYPE=Coverage ..
+make coverage
+```
 ## Add Request Handler
 To add a new different type of request handler, several things should be done as follows:
 

@@ -8,7 +8,7 @@
 namespace http {
 namespace server {
 /**
- * A handler to deal with creating a meme, where the paage is for the users to interact with.
+ * A handler to deal with creating a meme, where the page is for the users to interact with.
 */
 class CreateFormHandler : public RequestHandler {
 public:	
