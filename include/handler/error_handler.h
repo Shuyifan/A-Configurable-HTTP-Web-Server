@@ -3,9 +3,11 @@
 
 namespace http {
 namespace server {
+/**
+ * A handler to deal with error request. Will just return a 404 error page.
+*/
 class ErrorHandler : public RequestHandler {
 public:
-	
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 

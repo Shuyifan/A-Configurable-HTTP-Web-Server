@@ -49,6 +49,7 @@ public:
     void AddHeader(const std::string& name, const std::string& value) {
         headers[name] = value;
     }
+
     void SetContent(const std::string& body) {
         content_ = body;
     }
@@ -65,7 +66,14 @@ private:
     std::map<std::string, std::string> headers;
     std::string content_;
     StatusCode status_code_;
+
+    /**
+     * Given a status code output its corresoponding status string. (200 -> "200 OK\r\n").
+     * @param status The status code
+     * @return the status string.
+    */
     std::string resString(StatusCode status);
+    
     std::string version_;
 
 };

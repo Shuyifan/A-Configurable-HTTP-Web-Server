@@ -7,30 +7,31 @@
 
 using boost::asio::ip::tcp;
 
+/**
+ * A class dealing with all the IO operation.
+*/
 class session {
 public:
     session(boost::asio::io_service& io_service, 
             http::server::HandlerManager& handlerManager);
 
     tcp::socket& socket();
-    
-    /**
-    Start the first asynchronous operation for the connection.
-    */
+
     void start();
 
 private:
 
     /**
-    Perform an asynchronous read operation.Log the information at the same time
-    This will call different types of handler according to the path
+     * Perform an asynchronous read operation.Log the information at the same time
+     * This will call different types of handler according to the path.
+     * @param error The error code if there is any.
     */
-   
     void handle_write(const boost::system::error_code &error);
     
     /**
-    Perform an asynchronous write operation.
-    @param boost::system::error_code, bytes_transferred
+     * Perform an asynchronous write operation.
+     * @param error The error code if there is any.
+     * @param bytes_transferred The number of bytes needed to be transfered.
     */
     void handle_read(const boost::system::error_code &error,
                           size_t bytes_transferred);
@@ -45,7 +46,7 @@ private:
     tcp::socket socket_;
 
     // Maximum length for the HTTP request
-    enum { max_length = 1024 };
+    enum {max_length = 1024};
 
     // Buffer for incoming data.
     char data_[max_length];

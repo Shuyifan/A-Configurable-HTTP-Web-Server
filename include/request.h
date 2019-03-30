@@ -57,5 +57,3 @@ struct request
 
 } // namespace server
 } // namespace http
-
-

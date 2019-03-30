@@ -4,7 +4,9 @@
 
 namespace http {
 namespace server {
-
+/**
+ * A handler deals with deleting a spcific generated meme.
+*/
 class DeleteHandler : public RequestHandler {
 public:
     DeleteHandler(std::string fileDir) : fileDir_(fileDir) {}
@@ -16,7 +18,15 @@ public:
 
 private:
     std::string generateHTML();
+
+    /**
+     * Get the ID number from the request URI. (e.g. "/meme/view?id=12" -> 12)
+     * @param uri The input uri
+     * @return the id.
+    */
     int getID(const std::string uri);
+    
+    // Working directory for the handler.
     std::string fileDir_;
 };
 

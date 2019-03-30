@@ -10,14 +10,15 @@
 
 namespace http {
 namespace server {
+/**
+ * A handler to detect whether the server is working properly.
+*/
 class HealthHandler : public RequestHandler {
 public:	
 	static RequestHandler* create(const NginxConfig& config, 
 								  const std::string& root_path);
 
 	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;
-
-    
 };
 }
 }

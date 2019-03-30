@@ -9,6 +9,9 @@
 
 namespace http {
 namespace server {
+/**
+ * A handler deals with serving the static files.
+*/
 class StaticHandler : public RequestHandler {
 public:	
 	static RequestHandler* create(const NginxConfig& config, 
@@ -19,8 +22,8 @@ public:
 	void setParameter(std::string url, http::server::handler_parameter param);
 
 private:
+	// Map each handler's name to their corresponding handler parameter.
 	std::map<std::string, http::server::handler_parameter> param;
-
 };
 }
 }

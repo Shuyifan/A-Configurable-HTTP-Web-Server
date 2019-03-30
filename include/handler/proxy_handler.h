@@ -3,7 +3,9 @@
 
 namespace http {
 namespace server {
-
+/**
+ * A handler to deal with reverse proxy.
+*/
 class ProxyHandler : public RequestHandler {
 public:
     ProxyHandler(const NginxConfig& config, const std::string& server_root) :
@@ -15,10 +17,15 @@ public:
 	virtual std::unique_ptr<Response> HandlerRequest(const request& request) override;
 
 private:
+
  	std::string getDestURL(NginxConfig& config, std::string requestURL);
+	
 	std::string getPortNum(NginxConfig& config);
+	
 	std::string getHost(NginxConfig& config);
+	
 	NginxConfig handler_config_;
+	
 	std::string server_root_;
 };
 

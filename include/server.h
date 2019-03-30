@@ -14,55 +14,42 @@ class server {
 public:
 
     /**
-    Construct the server to listen on the specified port
-    @param NginxCongif 
+     * Construct the server according a specific config.
+     * @param config The input config. 
     */
     server(const NginxConfig& config);
     
     /**
-    Start the first accept operation.
+     * Start the first accept operation.
     */
     void start_accept();
 
-    /**
-    Run the server's io_service loop and start logging 
-    the information about the server
-    */
     void run();
     
-    /**
-    Stop the server.
-    */
    void stop();
 
 private:
     
     /**
-    Handle the signal to server and log the error
-
-    @param boost::system::error_code, signal_number
-    @return 
+     * Handle the signal to server and log the error.
+     * @param error_code The error code if there is any.
+     * @param signal_number The signal the sever receieve (e.g. Stop signal by Ctrl + C).
     */
     void handler(const boost::system::error_code& error, int signal_number);
     
     /**
     Do the accept operation
-
-    @param boost::system::error_code, signal_number
-    @return 
+     * @param new_session The session class (a class deals with IO operation) used for the server.
+     * @param error The error code if there is any.
     */
     void handle_accept(session *new_session, const boost::system::error_code &error);
-     
-    /**
-    Prepare the log file and log settings using boost log library
-    */
+    
     void initLogging();
 
     /**
     Check whether the port is valid.
-
-    @param integer port number
-    @return bool of is it valid or not
+     * @param  integer port number
+     * @return bool of is it valid or not
     */
     bool is_valid(int port);
 
